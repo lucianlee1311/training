@@ -55,7 +55,7 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  height: 300px;
+  height: 600px;
   background: #E2E2E2;
 }
 .main-area .card {
@@ -71,12 +71,23 @@
   height: 50%
 }
 .main-area .card.item-quarter {
-  height: 40%
+  height: 25%
 }
 .main-area .card.item-threequarter {
-  height: 60%
+  height: 75%
 }
-  
+.main-area .tip-item-half {
+  position: relative;
+  z-index: 1;
+  margin-top: -300px;
+}
+.main-area .tip-item-full {
+  position: relative;
+  z-index: 1;
+  margin-top: -600px;
+  margin-left: -500px;
+}
+
 /* ----- footer ----- */
 .footer {
   padding: 20px 0 30px;
