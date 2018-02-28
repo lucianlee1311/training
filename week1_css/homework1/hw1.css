@@ -1,0 +1,123 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+  
+/* ----- header ----- */
+.header {
+  width: 100%;
+  padding: 10px 0 10px;
+}
+.global-nav {
+  margin-top: 15px;
+  text-align: center;
+}
+.global-nav .nav-item {
+  display: inline-block;
+  margin: 0 5px;
+}
+.global-nav .nav-item.active a {
+  text-decoration: underline;
+}
+.global-nav .nav-item a {
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+  text-align: center;
+  color: #666;
+}
+  
+/* ----- main ----- */
+.main-row {
+  display: flex;
+}
+.main-columns {
+  background: #FFF;
+  width: 68%;
+}
+.columns-aside {
+  background: #E2E2E2;
+  width: 16%;
+}
+
+.main-top {
+  display: flex;
+  background: #E2E2E2;
+}
+.main-top .top-area {
+  display: flex;
+}
+.main-top .top-area img {
+  width: 100%;
+}
+
+.main-area {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  height: 300px;
+  background: #E2E2E2;
+}
+.main-area .card {
+  display: flex;
+  flex-direction: column;
+  width: 33%;
+  background: #E2E2E2;
+}
+.main-area .card.item-full {
+  height: 100%;
+}
+.main-area .card.item-half {
+  height: 50%
+}
+.main-area .card.item-quarter {
+  height: 40%
+}
+.main-area .card.item-threequarter {
+  height: 60%
+}
+  
+/* ----- footer ----- */
+.footer {
+  padding: 20px 0 30px;
+  background-color: #607d82;
+  color: #FFF;
+  text-align: center;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.footer-item {
+  padding: 0 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.footer-item .subscribe {
+  background-color: #405357;
+  color: #FFF;
+}
+.footer-item .text-standard {
+  text-align: start;
+}
+.text-standard.text-standard-icon {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.footer-item .text-email {
+  color: #FFF;
+}
+.footer-item .input-email {
+  width: 300px;
+}
+.footer-copyright {
+  background-color: #5E5E5E;
+}
+.copyright-link {
+  color: #FFF;
+}
+.copyright {
+  color: #FFF;
+  text-align: center;
+}
