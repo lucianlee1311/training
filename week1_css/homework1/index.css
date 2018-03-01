@@ -1,0 +1,221 @@
+ul li a { 
+  text-decoration: none; 
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ----- header ----- */
+.header {
+  width: 100%;
+  padding: 10px 0 10px;
+}
+.global-nav {
+  margin: 15px 0;
+  text-align: center;
+}
+.global-nav .nav-item {
+  display: inline-block;
+  margin: 0 10px;
+}
+.global-nav .nav-item.title {
+  text-decoration: underline;
+  color: #404A56;
+  font-size: 1.2rem;
+}
+
+.global-nav .nav-item a {
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+  text-align: center;
+  color: #5F707A;
+}
+
+/* ----- main ----- */
+.main-row {
+  display: flex;
+  width: 100%;
+}
+.main-columns {
+  background: #E2E2E2;
+  width: 980px;
+}
+.main-columns-aside {
+  background: #E2E2E2;
+  width: 100%;
+}
+
+.main-top {
+  display: flex;
+}
+.main-top .top-area-left {
+  width: 490px;
+  height: 388px;
+  background: #759BA4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.main-top .top-area-right {
+  width: 490px;
+  height: 388px;
+  background: #E2E2E2;
+}
+.main-top .top-area-left .text-title {
+  font-weight: bold;
+  font-size: 2.7rem;
+  color: #39484B;
+  margin-left: 42px;
+  margin-top: 15px;
+}
+.main-top .top-area-left .text-subtitle {
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  color: #F5FFFF;
+  margin-left: 42px;
+  margin-top: 20px;
+  padding-bottom: 5px; 
+  border-bottom: 2px solid #527378;
+  width: 250px;
+}
+
+.main-area {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  padding-top: 20px;
+  height: 657px;
+}
+.main-area:nth-child(4) {
+  margin-bottom: 20px;
+}
+.main-area .card {
+  display: flex;
+  flex-direction: column;
+  width: 314px;
+  margin-right: 20px;
+  background: #E2E2E2;
+}
+.main-area .card.item-full {
+  height: 657px;
+}
+.main-area .card.item-half {
+  height: 319px;
+}
+.main-area .card.item-half-space {
+  height: 319px;
+  padding-top: 19px;
+}
+.main-area .card.item-quarter {
+  height: 169px;
+  background: #759BA4;
+}
+.main-area .card.item-quarter .text-content {
+  font-weight: bold;
+  font-size: 2.5rem;
+  color: #E7EDED;
+  padding-top: 60px;
+  text-align: center;
+}
+.main-area .card.item-threequarter {
+  height: 468px;
+  padding-top: 20px;
+}
+.main-area .tip-item-half {
+  position: relative;
+  z-index: 1;
+  margin-top: -319px;
+  background: #759BA4;
+  width: 100px;
+  height: 60px;
+}
+.main-area .tip-item-half .text-content {
+  font-size: 1.2rem;
+  color: #E7EDED;
+  text-align: center;
+  padding-top: 20px;
+}
+.main-area .tip-item-full {
+  position: relative;
+  z-index: 1;
+  margin-top: -657px;
+  margin-left: -668px;
+  background: #759BA4;
+  width: 100px;
+  height: 60px;
+}
+.main-area .tip-item-full .text-content{
+  font-size: 1.2rem;
+  color: #E7EDED;
+  text-align: center;
+  padding-top: 20px;
+}
+
+/* ----- footer ----- */
+.footer {
+  height: 207px;
+  background-color: #607d82;
+  color: #9FB6BC;
+  text-align: center;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.footer-item {
+  padding: 50px 70px 0 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.footer-item .subscribe {
+  background-color: #405357;
+  color: #9FB6BC;
+}
+.footer-item .text-standard {
+  text-align: start;
+}
+.footer-item .text-standard.text-payway-icon {
+  margin-top: 10px;
+  text-align: start;
+}
+.text-standard.text-standard-icon {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.footer-item .text-email {
+  color: #9FB6BC;
+  text-decoration: none;
+}
+.footer-item .input-email {
+  width: 450px;
+  height: 38px;
+  background: #D0D0D0;
+  border: none;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+.footer-item .btn-subscribe {
+  width: 460px;
+  height: 38px;
+  background: #405357;
+  color: #9FB6BC;
+  border: none;
+  cursor: pointer;
+}
+.footer-copyright {
+  background-color: #5E5E5E;
+  height: 50px;
+}
+.copyright-link {
+  color: #9FB6BC;
+}
+.copyright {
+  padding-top: 20px;
+  color: #9FB6BC;
+  text-align: center;
+}
