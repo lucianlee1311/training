@@ -85,10 +85,16 @@ p a {
   align-items: center;
 }
 .main-item {
-  width: 903px;
+  width: 900px;
+  height: 290px;
   color: #86969C;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
+  margin-bottom: 90px;
+}
+.main-item:nth-child(1) {
+  margin-top: 40px;
 }
 .main-item-img {
   height: 290px;
@@ -122,8 +128,8 @@ p a {
   color: #E49E06;
   font-size: 1.5rem;
 }
-.main-item-desc h4.normal {
-  margin-top: 30px;
+.main-item-desc.normal h6 {
+  margin-bottom: 30px;
 }
 .main-item-desc h6 {
   margin: -10px 40px 0 0;
