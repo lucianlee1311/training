@@ -19,7 +19,7 @@ ul li a {
   background: #494748;
 }
 .global-nav {
-  width: 80%;
+  width: 920px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -42,18 +42,9 @@ ul li a {
   height: 650px;
   display: flex;
   flex-direction: column;
-}
-.board-img {
-  width: 100%;
-  height: 600px;
-  background: gray;
-}
-.board-entry {
-  display: flex;
-  flex-direction: column;
   align-items: center;
 }
-.board-entry-list {
+.board-entry {
   position: absolute;
   z-index: 2;
   top: 320px;
@@ -97,7 +88,7 @@ ul li a {
 }
 .board-description{
   width: 100%;
-  height: 45px;
+  height: 50px;
   font-size: 0.9rem;
   letter-spacing: 3px;
   background: #E1E1E1;
@@ -120,7 +111,7 @@ ul li a {
   height: 260px;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
 }
 .production-slogn .slogn-title {
@@ -133,6 +124,7 @@ ul li a {
 .production-slogn .spaceline {
   width: 30px;
   border-bottom: 1px solid #292929;
+  margin: 30px 0;
 }
 .production-slogn .slogn-subtitle {
   font-size: 1.7rem;
@@ -141,33 +133,44 @@ ul li a {
 .production-slogn .slogn-subtitle p {
   color: #2A2732;
 }
-.production-img {
+.production-picture {
   width: 920px;
   height: 410px;
 }
-.production-img-list {
-  width: 920px;
+.production-picture-list {
+  width: 930px;
   height: 410px;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
 }
-.production-img-example {
+.production-picture-list-item {
+  position: relative;
+  width: 300px;
+  height: 410px;
+}
+
+.picture-example-large {
+  width: 100%;
+  height: 600px;
+  background: gray;
+}
+.picture-example {
   width: 300px;
   height: 410px;
   background: #E3E3E3;
 }
-.production-img-example2 {
+.picture-example2 {
   width: 300px;
   height: 410px;
   background: #E4DEDE;
 }
 
-.img-text {
+.picture-text {
   position: absolute;
   z-index: 1;
-  top: 1350px;
+  top: 355px;
   width: 300px;
   height: 55px;
   background: #2A2B2D;
@@ -176,10 +179,10 @@ ul li a {
   justify-content: center;
   align-items: center;
 }
-.img-text p {
+.picture-text p {
   color: #FEFFFF;
 }
-.img-text-sale {
+.picture-text-sale {
   position: absolute;
   z-index: 1;
   width: 300px;
@@ -189,7 +192,7 @@ ul li a {
   justify-content: center;
   align-items: center;
 }
-.img-text-sale p {
+.picture-text-sale p {
   font-size: 3.0rem;
   letter-spacing: 10px;
 }
@@ -198,27 +201,27 @@ ul li a {
 .footer {
   background: #2A2B2D;
   width: 100%;
-  height: 130px;
-  padding: 20px 0;
-}
-.footer-item {
-  width: 100%;
+  height: 240px;
 }
 .footer-title {
   width: 100%;
-  box-sizing: border-box;
-  padding: 10px 0;
+  height: 70px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
 .footer-title-list {
   width: 920px;
+  height: 70px;
   display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
-.footer-title-list span {
-  width: 308px;
-  color: #C7CBCE;
+.footer-title-list p {
+  width: 33%;
+  color: #D1D1D3;
   font-size: 0.9rem;
   letter-spacing: 1px;
   display: flex;
@@ -227,9 +230,6 @@ ul li a {
 }
 .footer-item {
   width: 100%;
-  height: 100px;
-  box-sizing: border-box;
-  padding: 20px 0;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -238,10 +238,11 @@ ul li a {
   width: 920px;
   display: flex;
   flex-direction: row;
+  justify-content: center;
   align-items: flex-start;
 }
 .contact-link {
-  width: 308px;
+  width: 33%;
   color: #DDDFDC;
   display: flex;
   flex-direction: row;
@@ -254,27 +255,27 @@ ul li a {
   justify-content: space-between;
 }
 .subscribe {
-  width: 308px;
+  width: 33%;
   height: 90px;
 }
 .subscribe-list input {
-  width: 285px;
+  width: 100%;
   height: 35px;
   border: none;
   margin-bottom: 10px;
+  box-sizing: border-box;
   padding-left: 10px;
   background: #494748;
 }
-.input-email {
-  color: #F2F0F1;
-}
 .subscribe-list button {
-  width: 295px;
+  width: 100%;
   height: 40px;
   border: none;
+  background: #CDCDCD;
+  color: #333333;
 }
 .company-information {
-  width: 308px;
+  width: 33%;
   color: #DDDFDC;
   font-size: 0.9rem;
   letter-spacing: 1px;
@@ -283,14 +284,26 @@ ul li a {
   justify-content: center;
   align-items: center;
 }
+.company-information p {
+  color: #E5EEF3;
+}
 .company-information .company-information-phone {
-  margin-bottom: 5px; 
+  width: 100%;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.company-information .company-information-email {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .copyright {
-  background: #2A2B2D;
-  box-sizing: border-box;
-  padding: 30px 0 40px 0;
+  margin-top: 30px;
+  margin-bottom: 40px;
   color: #BFC5C5;
   font-size: 0.9rem;
   letter-spacing: 1px;
