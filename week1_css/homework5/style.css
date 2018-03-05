@@ -58,10 +58,11 @@ ul li a {
 
 .global-nav {
   width: 590px;
-  height: 70px;
+  height: 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-bottom: 50px;
 }
 .global-nav .nav-item.active a {
   color: #A69746;
@@ -189,7 +190,7 @@ ul li a {
 }
 .reservations-container {
   width: 980px;
-  height: 250px;
+  height: 100%;
   border-top: 2px solid #FCFCFC;
   border-bottom: 2px solid #FCFCFC;
 }
@@ -207,14 +208,14 @@ ul li a {
 }
 .reservations-content {
   width: 980px;
-  height: 90px;
+  height: 40px;
 }
 .reservations-list {
   width: 740px;
-  height: 90px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-bottom: 50px;
 }
 .reservations-list p {
   font-size: 1.3rem;
