@@ -1,4 +1,20 @@
 /** 3.Array */
+const fetch = require('node-fetch');
+
+const url = 'https://raw.githubusercontent.com/ReactMaker/api_server/master/db/album.json';
+
+const app = () => new Promise((resolve, reject) => {
+  fetch(url)
+    .then(res => res.json())
+    .then((json) => {
+      const newJson = Object.assign([], json);
+      resolve(newJson);
+    })
+    .catch((error) => {
+      reject(error);
+    });
+});
+
 /**
    1. deep clone array
    輸入陣列，輸出一個深層複製的陣列。兩者記憶體位置不能一樣。
@@ -11,11 +27,12 @@
 const cloneArray = (a) => {
   const b = JSON.parse(JSON.stringify(a));
   b.push(4);
-  console.log(a);
+  return a;
 };
 
 const a = [1, 2, 3];
-cloneArray(a);
+const result = cloneArray(a);
+console.log('result:', result);
 
 /**
    用 fetch 取得陣列到程式中
@@ -32,21 +49,26 @@ cloneArray(a);
       "price": 300
     }
  */
-// const fetch = require('node-fetch');
 
-// const url = 'https://raw.githubusercontent.com/ReactMaker/api_server/master/db/album.json';
+const searchId = sid => new Promise((resolve, reject) => {
+  app()
+    .then((newJson) => {
+      const result2 = newJson.find(value => value.id === sid);
+      resolve(result2);
+    })
+    .catch((error) => {
+      reject(error);
+    });
+});
 
-// const input = (id) => {
-//   fetch(url)
-//     .then(res => res.json())
-//     .then((json) => {
-//       const result = json.filter(value => value.id === id);
-//       console.log(result[0]);
-//     });
-// };
-
-// const id = 5;
-// input(id);
+const sid = 5;
+searchId(sid)
+  .then((result2) => {
+    console.log('2 result:', result2);
+  })
+  .catch((error) => {
+    console.log('2 error:', error);
+  });
 
 /**
    用 fetch 取得陣列到程式中
@@ -78,17 +100,27 @@ cloneArray(a);
         "price": 400
     }
  */
-// const input = (title) => {
-//   fetch(url)
-//     .then(res => res.json())
-//     .then((json) => {
-//       const result = json.filter(value => value.title.indexOf(title) > -1);
-//       console.log(result);
-//     });
-// };
 
-// const title = '美好';
-// input(title);
+const searchTitle = title => new Promise((resolve, reject) => {
+  app()
+    .then((newJson) => {
+      const result3 = newJson.filter(value => value.title.indexOf(title) > -1);
+      resolve(result3);
+    })
+    .catch((error) => {
+      reject(error);
+    });
+});
+
+const title = '美好';
+searchTitle(title)
+  .then((result3) => {
+    console.log('3 result:', result3);
+  })
+  .catch((error) => {
+    console.log('3 error:', error);
+  });
+
 
 /**
    用 fetch 取得陣列到程式中
@@ -104,19 +136,29 @@ cloneArray(a);
    {id: 11, img: 'xxx', title: 'xxx', desc: 'xxx', price: 2659},
    ...
  */
-// const input = (data) => {
-//   fetch(url)
-//     .then(res => res.json())
-//     .then((json) => {
-//       json.splice(10, 0, data);
-//       console.log(json);
-//     });
-// };
 
-// const data = {
-//   id: 99, img: 'xxx', title: 'xxx', desc: 'xxx', price: 100,
-// };
-// input(data);
+const insertData = data => new Promise((resolve, reject) => {
+  app()
+    .then((newJson) => {
+      newJson.splice(10, 0, data);
+      resolve(newJson);
+    })
+    .catch((error) => {
+      reject(error);
+    });
+});
+
+const data = {
+  id: 99, img: 'xxx', title: 'xxx', desc: 'xxx', price: 100,
+};
+insertData(data)
+  .then((result4) => {
+    console.log('4 result:', result4);
+  })
+  .catch((error) => {
+    console.log('4 error:', error);
+  });
+
 
 /**
    用 fetch 取得陣列到程式中
@@ -135,23 +177,32 @@ cloneArray(a);
     },
     ...
  */
-// const input = (id, data) => {
-//   fetch(url)
-//     .then(res => res.json())
-//     .then((json) => {
-//       const temp = json.slice(id - 1, id);
-//       temp[0].title = data.title;
-//       temp[0].desc = data.desc;
-//       json.splice(id - 1, 1, temp[0]);
-//       console.log(json);
-//     });
-// };
 
-// const id = 3;
-// const data = {
-//   img: 'xxx', title: 'xxx', desc: 'xxx', price: 100,
-// };
-// input(id, data);
+const updateData = (uid, udata) => new Promise((resolve, reject) => {
+  app()
+    .then((newJson) => {
+      const temp = newJson.slice(uid - 1, uid);
+      const newTemp = Object.assign({}, temp[0], udata);
+      newJson.splice(uid - 1, 1, newTemp);
+      resolve(newJson);
+    })
+    .catch((error) => {
+      reject(error);
+    });
+});
+
+const uid = 3;
+const udata = {
+  img: 'xxx', title: 'xxx', desc: 'xxx', price: 100,
+};
+updateData(uid, udata)
+  .then((result5) => {
+    console.log('5 result:', result5);
+  })
+  .catch((error) => {
+    console.log('5 error:', error);
+  });
+
 
 /**
    用 fetch 取得陣列到程式中
@@ -159,17 +210,27 @@ cloneArray(a);
    6. 刪除特定id的資料
    輸入 5 輸出已經刪除完 id 為 5 的陣列
  */
-// const input = (id) => {
-//   fetch(url)
-//     .then(res => res.json())
-//     .then((json) => {
-//       json.splice(id - 1, 1);
-//       console.log(json);
-//     });
-// };
 
-// const id = 5;
-// input(id);
+const deleteData = did => new Promise((resolve, reject) => {
+  app()
+    .then((newJson) => {
+      newJson.splice(did - 1, 1);
+      resolve(newJson);
+    })
+    .catch((error) => {
+      reject(error);
+    });
+});
+
+const did = 5;
+deleteData(did)
+  .then((result6) => {
+    console.log('6 result:', result6);
+  })
+  .catch((error) => {
+    console.log('6 error:', error);
+  });
+
 
 /**
    用 fetch 取得陣列到程式中
@@ -178,18 +239,27 @@ cloneArray(a);
    輸入 desc or asc
    輸出價格對應排序的陣列
  */
-// const input = (orderby) => {
-//   fetch(url)
-//     .then(res => res.json())
-//     .then((json) => {
-//       if (orderby === 'desc') {
-//         json.sort((a, b) => (a.price < b.price ? 1 : -1));
-//       } else {
-//         json.sort((a, b) => (a.price > b.price ? 1 : -1));
-//       }
-//       console.log(json);
-//     });
-// };
 
-// const orderby = 'asc';// 'desc'
-// input(orderby);
+const sortByPrice = orderby => new Promise((resolve, reject) => {
+  app()
+    .then((newJson) => {
+      if (orderby === 'desc') {
+        newJson.sort((x, y) => (x.price < y.price ? 1 : -1));
+      } else {
+        newJson.sort((x, y) => (x.price > y.price ? 1 : -1));
+      }
+      resolve(newJson);
+    })
+    .catch((error) => {
+      reject(error);
+    });
+});
+
+const orderby = 'asc';// 'desc'
+sortByPrice(orderby)
+  .then((result7) => {
+    console.log('7 result: ', result7);
+  })
+  .catch((error) => {
+    console.log('7 error: ', error);
+  });
