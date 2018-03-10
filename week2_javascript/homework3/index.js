@@ -3,6 +3,19 @@ const fetch = require('node-fetch');
 
 const url = 'https://raw.githubusercontent.com/ReactMaker/api_server/master/db/album.json';
 
+/** async await */
+const getAlbumData = async () => {
+  try {
+    const res = await fetch(url);
+    return res.json();
+  } catch (error) {
+    console.log('fetch error:', error);
+    return error;
+  }
+};
+
+/** Promise */
+/*
 const getAlbumData = () => new Promise((resolve, reject) => {
   fetch(url)
     .then(res => res.json())
@@ -11,10 +24,11 @@ const getAlbumData = () => new Promise((resolve, reject) => {
       resolve(newJson);
     })
     .catch((error) => {
+      console.log('fetch error:', error);
       reject(error);
     });
 });
-
+*/
 /**
    1. deep clone array
    輸入陣列，輸出一個深層複製的陣列。兩者記憶體位置不能一樣。
@@ -49,7 +63,28 @@ console.log('result:', result);
       "price": 300
     }
  */
+/** async await */
+const searchId = async (sid) => {
+  try {
+    const newJson = await getAlbumData();
+    const result2 = newJson.find(value => value.id === sid);
+    return result2;
+  } catch (error) {
+    return error;
+  }
+};
 
+const sid = 5;
+searchId(sid)
+  .then((result2) => {
+    console.log('2 result:', result2);
+  })
+  .catch((error) => {
+    console.log('2 error:', error);
+  });
+
+/** Promise */
+/*
 const searchId = sid => new Promise((resolve, reject) => {
   getAlbumData()
     .then((newJson) => {
@@ -60,15 +95,7 @@ const searchId = sid => new Promise((resolve, reject) => {
       reject(error);
     });
 });
-
-const sid = 5;
-searchId(sid)
-  .then((result2) => {
-    console.log('2 result:', result2);
-  })
-  .catch((error) => {
-    console.log('2 error:', error);
-  });
+*/
 
 /**
    用 fetch 取得陣列到程式中
@@ -100,17 +127,16 @@ searchId(sid)
         "price": 400
     }
  */
-
-const searchTitle = title => new Promise((resolve, reject) => {
-  getAlbumData()
-    .then((newJson) => {
-      const result3 = newJson.filter(value => value.title.indexOf(title) > -1);
-      resolve(result3);
-    })
-    .catch((error) => {
-      reject(error);
-    });
-});
+/** async await */
+const searchTitle = async (title) => {
+  try {
+    const newJson = await getAlbumData();
+    const result3 = newJson.filter(value => value.title.indexOf(title) > -1);
+    return result3;
+  } catch (error) {
+    return error;
+  }
+};
 
 const title = '美好';
 searchTitle(title)
@@ -121,6 +147,19 @@ searchTitle(title)
     console.log('3 error:', error);
   });
 
+/** Promise */
+/*
+const searchTitle = title => new Promise((resolve, reject) => {
+  getAlbumData()
+    .then((newJson) => {
+      const result3 = newJson.filter(value => value.title.indexOf(title) > -1);
+      resolve(result3);
+    })
+    .catch((error) => {
+      reject(error);
+    });
+});
+*/
 
 /**
    用 fetch 取得陣列到程式中
@@ -136,17 +175,16 @@ searchTitle(title)
    {id: 11, img: 'xxx', title: 'xxx', desc: 'xxx', price: 2659},
    ...
  */
-
-const insertData = data => new Promise((resolve, reject) => {
-  getAlbumData()
-    .then((newJson) => {
-      newJson.splice(10, 0, data);
-      resolve(newJson);
-    })
-    .catch((error) => {
-      reject(error);
-    });
-});
+/** async await */
+const insertData = async (data) => {
+  try {
+    const newJson = await getAlbumData();
+    newJson.splice(10, 0, data);
+    return newJson;
+  } catch (error) {
+    return error;
+  }
+};
 
 const data = {
   id: 99, img: 'xxx', title: 'xxx', desc: 'xxx', price: 100,
@@ -159,6 +197,19 @@ insertData(data)
     console.log('4 error:', error);
   });
 
+/** Promise */
+/*
+const insertData = data => new Promise((resolve, reject) => {
+  getAlbumData()
+    .then((newJson) => {
+      newJson.splice(10, 0, data);
+      resolve(newJson);
+    })
+    .catch((error) => {
+      reject(error);
+    });
+});
+*/
 
 /**
    用 fetch 取得陣列到程式中
@@ -177,19 +228,18 @@ insertData(data)
     },
     ...
  */
-
-const updateData = (uid, udata) => new Promise((resolve, reject) => {
-  getAlbumData()
-    .then((newJson) => {
-      const temp = newJson.slice(uid - 1, uid);
-      const newTemp = Object.assign({}, temp[0], udata);
-      newJson.splice(uid - 1, 1, newTemp);
-      resolve(newJson);
-    })
-    .catch((error) => {
-      reject(error);
-    });
-});
+/** async await */
+const updateData = async (uid, udata) => {
+  try {
+    const newJson = await getAlbumData();
+    const temp = newJson.slice(uid - 1, uid);
+    const newTemp = Object.assign({}, temp[0], udata);
+    newJson.splice(uid - 1, 1, newTemp);
+    return newJson;
+  } catch (error) {
+    return error;
+  }
+};
 
 const uid = 3;
 const udata = {
@@ -203,6 +253,21 @@ updateData(uid, udata)
     console.log('5 error:', error);
   });
 
+/** Promise */
+/*
+const updateData = (uid, udata) => new Promise((resolve, reject) => {
+  getAlbumData()
+    .then((newJson) => {
+      const temp = newJson.slice(uid - 1, uid);
+      const newTemp = Object.assign({}, temp[0], udata);
+      newJson.splice(uid - 1, 1, newTemp);
+      resolve(newJson);
+    })
+    .catch((error) => {
+      reject(error);
+    });
+});
+*/
 
 /**
    用 fetch 取得陣列到程式中
@@ -210,17 +275,16 @@ updateData(uid, udata)
    6. 刪除特定id的資料
    輸入 5 輸出已經刪除完 id 為 5 的陣列
  */
-
-const deleteData = did => new Promise((resolve, reject) => {
-  getAlbumData()
-    .then((newJson) => {
-      newJson.splice(did - 1, 1);
-      resolve(newJson);
-    })
-    .catch((error) => {
-      reject(error);
-    });
-});
+/** async await */
+const deleteData = async (did) => {
+  try {
+    const newJson = await getAlbumData();
+    newJson.splice(did - 1, 1);
+    return newJson;
+  } catch (error) {
+    return error;
+  }
+};
 
 const did = 5;
 deleteData(did)
@@ -231,6 +295,19 @@ deleteData(did)
     console.log('6 error:', error);
   });
 
+/** Promise */
+/*
+const deleteData = did => new Promise((resolve, reject) => {
+  getAlbumData()
+    .then((newJson) => {
+      newJson.splice(did - 1, 1);
+      resolve(newJson);
+    })
+    .catch((error) => {
+      reject(error);
+    });
+});
+*/
 
 /**
    用 fetch 取得陣列到程式中
@@ -239,7 +316,32 @@ deleteData(did)
    輸入 desc or asc
    輸出價格對應排序的陣列
  */
+/** async await */
+const sortByPrice = async (orderby) => {
+  try {
+    const newJson = await getAlbumData();
+    if (orderby === 'desc') {
+      newJson.sort((x, y) => (x.price < y.price ? 1 : -1));
+    } else {
+      newJson.sort((x, y) => (x.price > y.price ? 1 : -1));
+    }
+    return newJson;
+  } catch (error) {
+    return error;
+  }
+};
 
+const orderby = 'asc';// 'desc'
+sortByPrice(orderby)
+  .then((result7) => {
+    console.log('7 result: ', result7);
+  })
+  .catch((error) => {
+    console.log('7 error: ', error);
+  });
+
+/** Promise */
+/*
 const sortByPrice = orderby => new Promise((resolve, reject) => {
   getAlbumData()
     .then((newJson) => {
@@ -254,12 +356,4 @@ const sortByPrice = orderby => new Promise((resolve, reject) => {
       reject(error);
     });
 });
-
-const orderby = 'asc';// 'desc'
-sortByPrice(orderby)
-  .then((result7) => {
-    console.log('7 result: ', result7);
-  })
-  .catch((error) => {
-    console.log('7 error: ', error);
-  });
+*/
