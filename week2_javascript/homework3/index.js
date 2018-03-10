@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 
 const url = 'https://raw.githubusercontent.com/ReactMaker/api_server/master/db/album.json';
 
-const app = () => new Promise((resolve, reject) => {
+const getAlbumData = () => new Promise((resolve, reject) => {
   fetch(url)
     .then(res => res.json())
     .then((json) => {
@@ -51,7 +51,7 @@ console.log('result:', result);
  */
 
 const searchId = sid => new Promise((resolve, reject) => {
-  app()
+  getAlbumData()
     .then((newJson) => {
       const result2 = newJson.find(value => value.id === sid);
       resolve(result2);
@@ -102,7 +102,7 @@ searchId(sid)
  */
 
 const searchTitle = title => new Promise((resolve, reject) => {
-  app()
+  getAlbumData()
     .then((newJson) => {
       const result3 = newJson.filter(value => value.title.indexOf(title) > -1);
       resolve(result3);
@@ -138,7 +138,7 @@ searchTitle(title)
  */
 
 const insertData = data => new Promise((resolve, reject) => {
-  app()
+  getAlbumData()
     .then((newJson) => {
       newJson.splice(10, 0, data);
       resolve(newJson);
@@ -179,7 +179,7 @@ insertData(data)
  */
 
 const updateData = (uid, udata) => new Promise((resolve, reject) => {
-  app()
+  getAlbumData()
     .then((newJson) => {
       const temp = newJson.slice(uid - 1, uid);
       const newTemp = Object.assign({}, temp[0], udata);
@@ -212,7 +212,7 @@ updateData(uid, udata)
  */
 
 const deleteData = did => new Promise((resolve, reject) => {
-  app()
+  getAlbumData()
     .then((newJson) => {
       newJson.splice(did - 1, 1);
       resolve(newJson);
@@ -241,7 +241,7 @@ deleteData(did)
  */
 
 const sortByPrice = orderby => new Promise((resolve, reject) => {
-  app()
+  getAlbumData()
     .then((newJson) => {
       if (orderby === 'desc') {
         newJson.sort((x, y) => (x.price < y.price ? 1 : -1));
