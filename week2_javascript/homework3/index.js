@@ -7,7 +7,9 @@ const url = 'https://raw.githubusercontent.com/ReactMaker/api_server/master/db/a
 const getAlbumData = async () => {
   try {
     const res = await fetch(url);
-    return res.json();
+    const resJson = await res.json();
+    const newJson = Object.assign([], resJson);
+    return newJson;
   } catch (error) {
     console.log('fetch error:', error);
     return error;
