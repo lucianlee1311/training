@@ -85,7 +85,7 @@ const reverseVowel = (s) => {
   vowelStrArray.reverse().forEach((element) => {
     newStr = newStr.replace('@', element);
   });
-  
+
   return newStr;
 };
 
@@ -99,7 +99,9 @@ console.log('result4:', result4);
  * 範例：
  * 輸入：'11000000' 輸出：192
  */
+const convertDecimal = binary => parseInt(binary, 2);
 
+/* v.1
 const convertDecimal = (binary) => {
   let result = 0;
   for (let i = 0; i < binary.length; i += 1) {
@@ -107,7 +109,7 @@ const convertDecimal = (binary) => {
   }
   return result;
 };
-
+*/
 const binary = '11000000';
 const result5 = convertDecimal(binary);
 console.log('result5:', result5);
@@ -119,7 +121,7 @@ console.log('result5:', result5);
  * 輸入：65 輸出：'01000001'
  */
 
- const convertBinary = (decimal) => {
+const convertBinary = (decimal) => {
   const binary = decimal.toString(2);
   const binaryArray = Array.from(binary);
   let zeroLength = 8 - binaryArray.length;
