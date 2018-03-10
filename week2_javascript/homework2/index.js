@@ -99,9 +99,15 @@ console.log('result4:', result4);
  * 範例：
  * 輸入：'11000000' 輸出：192
  */
-const convertDecimal = binary => parseInt(binary, 2);
+/** v.2 */
+const convertDecimal = (binary) => {
+  const binaryArray = Array.from(binary);
+  const result = binaryArray.reduce((previous, current, index) => parseInt(previous, 10) + (parseInt(current, 10) * (2 ** (binaryArray.length - 1 - index))), '0');
+  return result;
+};
 
-/* v.1
+/** v.1 */
+/*
 const convertDecimal = (binary) => {
   let result = 0;
   for (let i = 0; i < binary.length; i += 1) {
