@@ -18,7 +18,7 @@ const sameInitial = (myArray) => {
     });
     result = result.substr(0, sameLength);
   });
- return result;
+  return result;
 };
 
 const myArray = ['abcd', 'abccc', 'abdec'];
