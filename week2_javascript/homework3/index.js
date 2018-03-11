@@ -11,8 +11,7 @@ const getAlbumData = async () => {
     const newJson = Object.assign([], resJson);
     return newJson;
   } catch (error) {
-    console.log('fetch error:', error);
-    return error;
+    throw new Error(error);
   }
 };
 
@@ -72,7 +71,7 @@ const searchId = async (sid) => {
     const result2 = newJson.find(value => value.id === sid);
     return result2;
   } catch (error) {
-    return error;
+    throw new Error(error);
   }
 };
 
@@ -136,7 +135,7 @@ const searchTitle = async (title) => {
     const result3 = newJson.filter(value => value.title.indexOf(title) > -1);
     return result3;
   } catch (error) {
-    return error;
+    throw new Error(error);
   }
 };
 
@@ -184,7 +183,7 @@ const insertData = async (data) => {
     newJson.splice(10, 0, data);
     return newJson;
   } catch (error) {
-    return error;
+    throw new Error(error);
   }
 };
 
@@ -239,7 +238,7 @@ const updateData = async (uid, udata) => {
     newJson.splice(uid - 1, 1, newTemp);
     return newJson;
   } catch (error) {
-    return error;
+    throw new Error(error);
   }
 };
 
@@ -284,7 +283,7 @@ const deleteData = async (did) => {
     newJson.splice(did - 1, 1);
     return newJson;
   } catch (error) {
-    return error;
+    throw new Error(error);
   }
 };
 
@@ -329,7 +328,7 @@ const sortByPrice = async (orderby) => {
     }
     return newJson;
   } catch (error) {
-    return error;
+    throw new Error(error);
   }
 };
 

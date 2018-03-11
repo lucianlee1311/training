@@ -11,14 +11,14 @@ b.text = 'bbb';
 
 console.log(a.text); // 'bbb'
 */
-const cloneArray = (a) => {
+const getCloneObjectText = (a) => {
   const b = Object.assign({}, a);
   b.text = 'bbb';
   return a.text;
 };
 
 const a = { text: 'aaa' };
-const result = cloneArray(a);
+const result = getCloneObjectText(a);
 console.log('result:', result);
 
 /**
