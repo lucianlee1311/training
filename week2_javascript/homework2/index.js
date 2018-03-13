@@ -4,6 +4,9 @@
  * 範例： ['abcd','abccc','abdec'] --> 共同字首為 'ab' 。
  */
 const sameInitial = (myArray) => {
+  if (!(myArray instanceof Array)) {
+    return null;
+  }
   let result = myArray[0];
   myArray.forEach((entry, i) => {
     if (i === 0) {
@@ -21,9 +24,9 @@ const sameInitial = (myArray) => {
   return result;
 };
 
-const myArray = ['abcd', 'abccc', 'abdec'];
-const result1 = sameInitial(myArray);
-console.log('result1:', result1);
+// const myArray = ['abcd', 'abccc', 'abdec'];
+// const result1 = sameInitial(myArray);
+// console.log('result1:', result1);
 
 /**
  * 2.將一個字串反轉後回傳
@@ -31,13 +34,16 @@ console.log('result1:', result1);
  */
 
 const reverseStr = (data) => {
+  if (!(typeof (data) === 'string' || data instanceof String)) {
+    return null;
+  }
   const strAry = Array.from(data).reverse().join('');
   return strAry;
 };
 
-const data = 'hello';
-const result2 = reverseStr(data);
-console.log('result2:', result2);
+// const data = 'hello';
+// const result2 = reverseStr(data);
+// console.log('result2:', result2);
 
 
 /**
@@ -48,16 +54,21 @@ console.log('result2:', result2);
  */
 
 const isRestructWord = (s, t) => {
+  if (!(typeof (s) === 'string' || s instanceof String)) {
+    return null;
+  } else if (!(typeof (t) === 'string' || t instanceof String)) {
+    return null;
+  }
   const newS = Array.from(s).sort().join('');
   const newT = Array.from(t).sort().join('');
   const result = newS === newT;
   return result;
 };
 
-const s = 'anagram';// 'rat';
-const t = 'nagaram';// 'car';
-const result3 = isRestructWord(s, t);
-console.log('result3:', result3);
+// const s = 'anagram';// 'rat';
+// const t = 'nagaram';// 'car';
+// const result3 = isRestructWord(s, t);
+// console.log('result3:', result3);
 
 
 /**
@@ -70,6 +81,9 @@ console.log('result3:', result3);
  */
 
 const reverseVowel = (s) => {
+  if (!(typeof (s) === 'string' || s instanceof String)) {
+    return null;
+  }
   const vowelStr = 'aeiou';
   const vowelStrArray = [];
   let newStr = '';
@@ -89,9 +103,9 @@ const reverseVowel = (s) => {
   return newStr;
 };
 
-const str4 = 'hello';// 'leetcode';
-const result4 = reverseVowel(str4);
-console.log('result4:', result4);
+// const str4 = 'hello';// 'leetcode';
+// const result4 = reverseVowel(str4);
+// console.log('result4:', result4);
 
 
 /**
@@ -101,8 +115,22 @@ console.log('result4:', result4);
  */
 /** v.2 */
 const convertDecimal = (binary) => {
-  const binaryArray = Array.from(binary);
-  const result = binaryArray.reduce((previous, current, index) => parseInt(previous, 10) + (parseInt(current, 10) * (2 ** (binaryArray.length - 1 - index))), '0');
+  if (!(typeof (binary) === 'string' || binary instanceof String)) {
+    return null;
+  }
+  let result = null;
+  try {
+    const binaryArray = Array.from(binary);
+    binaryArray.forEach((character) => {
+      const digit = parseInt(character, 10);
+      if (!(digit === 0 || digit === 1)) {
+        throw new Error('input is not binary');
+      }
+    });
+    result = binaryArray.reduce((previous, current, index) => parseInt(previous, 10) + (parseInt(current, 10) * (2 ** (binaryArray.length - 1 - index))), '0');
+  } catch (error) {
+    console.log(error.message);
+  }
   return result;
 };
 
@@ -116,9 +144,9 @@ const convertDecimal = (binary) => {
   return result;
 };
 */
-const binary = '11000000';
-const result5 = convertDecimal(binary);
-console.log('result5:', result5);
+// const binary = '11000000';
+// const result5 = convertDecimal(binary);
+// console.log('result5:', result5);
 
 
 /**
@@ -128,6 +156,9 @@ console.log('result5:', result5);
  */
 
 const convertBinary = (decimal) => {
+  if (!(/^-?\d+$/.test(decimal))) {
+    return null;
+  }
   const binary = decimal.toString(2);
   const binaryArray = Array.from(binary);
   let zeroLength = 8 - binaryArray.length;
@@ -140,9 +171,9 @@ const convertBinary = (decimal) => {
   return result;
 };
 
-const decimal = 65;
-const result6 = convertBinary(decimal);
-console.log('result6:', result6);
+// const decimal = 65;
+// const result6 = convertBinary(decimal);
+// console.log('result6:', result6);
 
 
 /**
@@ -152,22 +183,24 @@ console.log('result6:', result6);
  */
 
 const addDigit = (num) => {
+  if (!(/^\d+$/.test(num))) {
+    return null;
+  }
   let strNumArray = [];
   let sum = 0;
-  while (num >= 10) {
+  let result = num;
+  while (result >= 10) {
     sum = 0;
-    strNumArray = num.toString().split('');
-    for (let i = 0; i < strNumArray.length; i += 1) {
-      sum += parseInt(strNumArray[i], 10);
-    }
-    num = sum;
+    strNumArray = result.toString().split('');
+    sum = strNumArray.reduce((previous, current) => parseInt(previous, 10) + parseInt(current, 10));
+    result = sum;
   }
-  return num;
+  return result;
 };
 
-const num = 38;
-const result7 = addDigit(num);
-console.log('result7:', result7);
+// const num = 38;
+// const result7 = addDigit(num);
+// console.log('result7:', result7);
 
 
 /**
@@ -177,6 +210,9 @@ console.log('result7:', result7);
  */
 
 const reverseInt = (num) => {
+  if (!(/^-?\d+$/.test(num))) {
+    return null;
+  }
   const strNum = Math.abs(num).toString();
   const newStr = Array.from(strNum).reverse().join('');
   let result = parseInt(newStr, 10);
@@ -186,6 +222,18 @@ const reverseInt = (num) => {
   return result;
 };
 
-const num8 = 123;
-const result8 = reverseInt(num8);
-console.log('result8:', result8);
+// const num8 = -123;
+// const result8 = reverseInt(num8);
+// console.log('result8:', result8);
+
+
+module.exports = {
+  sameInitial,
+  reverseStr,
+  isRestructWord,
+  reverseVowel,
+  convertDecimal,
+  convertBinary,
+  addDigit,
+  reverseInt,
+};
