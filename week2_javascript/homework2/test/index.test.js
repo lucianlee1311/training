@@ -37,6 +37,10 @@ test('isRestructWord(): input 非字串', () => {
   expect(func.isRestructWord(123, 'car')).toBeNull();
 });
 
+test('isRestructWord(): input 非字串', () => {
+  expect(func.isRestructWord('rat', 456)).toBeNull();
+});
+
 
 /** func4 reverseVowel */
 test('reverseVowel(): input 字串', () => {
