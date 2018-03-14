@@ -14,7 +14,6 @@ const getAlbumData = async () => {
     throw error;
   }
 };
-
 /** Promise */
 /*
 const getAlbumData = () => new Promise((resolve, reject) => {
@@ -40,14 +39,18 @@ const getAlbumData = () => new Promise((resolve, reject) => {
    console.log(a); // [1,2,3,4]
  */
 const cloneArray = (a) => {
-  const b = JSON.parse(JSON.stringify(a));
+  // const b = JSON.parse(JSON.stringify(a));
+  if (!(a instanceof Array)) {
+    return null;
+  }
+  const b = Object.assign([], a);
   b.push(4);
   return a;
 };
 
-const a = [1, 2, 3];
-const result = cloneArray(a);
-console.log('result:', result);
+// const a = [1, 2, 3];
+// const result = cloneArray(a);
+// console.log('result:', result);
 
 /**
    用 fetch 取得陣列到程式中
@@ -66,6 +69,9 @@ console.log('result:', result);
  */
 /** async await */
 const searchId = async (sid) => {
+  if (!(/^\+?[1-9][0-9]*$/.test(sid) && Number.isInteger(sid))) {
+    return null;
+  }
   try {
     const newJson = await getAlbumData();
     const result2 = newJson.find(value => value.id === sid);
@@ -75,14 +81,14 @@ const searchId = async (sid) => {
   }
 };
 
-const sid = 5;
-searchId(sid)
-  .then((result2) => {
-    console.log('2 result:', result2);
-  })
-  .catch((error) => {
-    console.log('2 error:', error);
-  });
+// const sid = 5;
+// searchId(sid)
+//   .then((result2) => {
+//     console.log('2 result:', result2);
+//   })
+//   .catch((error) => {
+//     console.log('2 error:', error);
+//   });
 
 /** Promise */
 /*
@@ -130,6 +136,9 @@ const searchId = sid => new Promise((resolve, reject) => {
  */
 /** async await */
 const searchTitle = async (title) => {
+  if (!(typeof (title) === 'string' || title instanceof String)) {
+    return null;
+  }
   try {
     const newJson = await getAlbumData();
     const result3 = newJson.filter(value => value.title.indexOf(title) > -1);
@@ -139,14 +148,14 @@ const searchTitle = async (title) => {
   }
 };
 
-const title = '美好';
-searchTitle(title)
-  .then((result3) => {
-    console.log('3 result:', result3);
-  })
-  .catch((error) => {
-    console.log('3 error:', error);
-  });
+// const title = '美好';
+// searchTitle(title)
+//   .then((result3) => {
+//     console.log('3 result:', result3);
+//   })
+//   .catch((error) => {
+//     console.log('3 error:', error);
+//   });
 
 /** Promise */
 /*
@@ -178,6 +187,19 @@ const searchTitle = title => new Promise((resolve, reject) => {
  */
 /** async await */
 const insertData = async (data) => {
+  if (!(typeof (data) === 'object' || data instanceof Object)) {
+    return null;
+  } else if (!(/^\+?[1-9][0-9]*$/.test(data.id) && Number.isInteger(data.id))) {
+    return null;
+  } else if (!(typeof (data.img) === 'string' || data.img instanceof String)) {
+    return null;
+  } else if (!(typeof (data.title) === 'string' || data.title instanceof String)) {
+    return null;
+  } else if (!(typeof (data.desc) === 'string' || data.desc instanceof String)) {
+    return null;
+  } else if (!(/^\d+$/.test(data.price) && Number.isInteger(data.price))) {
+    return null;
+  }
   try {
     const newJson = await getAlbumData();
     newJson.splice(10, 0, data);
@@ -187,16 +209,19 @@ const insertData = async (data) => {
   }
 };
 
-const data = {
-  id: 99, img: 'xxx', title: 'xxx', desc: 'xxx', price: 100,
-};
-insertData(data)
-  .then((result4) => {
-    console.log('4 result:', result4);
-  })
-  .catch((error) => {
-    console.log('4 error:', error);
-  });
+// const data = {
+//   id: 99, img: 'xxx', title: 'xxx', desc: 'xxx', price: 100,
+// };
+// const data = {
+//   id: 99, img: 'xxx', title: 'xxx', desc: 'xxx', price: 100,
+// };
+// insertData(data)
+//   .then((result4) => {
+//     console.log('4 result:', result4);
+//   })
+//   .catch((error) => {
+//     console.log('4 error:', error);
+//   });
 
 /** Promise */
 /*
@@ -231,6 +256,15 @@ const insertData = data => new Promise((resolve, reject) => {
  */
 /** async await */
 const updateData = async (uid, udata) => {
+  if (!(/^\+?[1-9][0-9]*$/.test(uid) && Number.isInteger(uid))) {
+    return null;
+  } else if (!(typeof (udata) === 'object' || udata instanceof Object)) {
+    return null;
+  } else if (!(typeof (udata.title) === 'string' || udata.title instanceof String)) {
+    return null;
+  } else if (!(typeof (udata.desc) === 'string' || udata.desc instanceof String)) {
+    return null;
+  }
   try {
     const newJson = await getAlbumData();
     const temp = newJson.slice(uid - 1, uid);
@@ -242,17 +276,17 @@ const updateData = async (uid, udata) => {
   }
 };
 
-const uid = 3;
-const udata = {
-  img: 'xxx', title: 'xxx', desc: 'xxx', price: 100,
-};
-updateData(uid, udata)
-  .then((result5) => {
-    console.log('5 result:', result5);
-  })
-  .catch((error) => {
-    console.log('5 error:', error);
-  });
+// const uid = 3;
+// const udata = {
+//   title: '修改title', desc: '修改desc',
+// };
+// updateData(uid, udata)
+//   .then((result5) => {
+//     console.log('5 result:', result5);
+//   })
+//   .catch((error) => {
+//     console.log('5 error:', error);
+//   });
 
 /** Promise */
 /*
@@ -278,6 +312,9 @@ const updateData = (uid, udata) => new Promise((resolve, reject) => {
  */
 /** async await */
 const deleteData = async (did) => {
+  if (!(/^\+?[1-9][0-9]*$/.test(did) && Number.isInteger(did))) {
+    return null;
+  }
   try {
     const newJson = await getAlbumData();
     newJson.splice(did - 1, 1);
@@ -287,14 +324,14 @@ const deleteData = async (did) => {
   }
 };
 
-const did = 5;
-deleteData(did)
-  .then((result6) => {
-    console.log('6 result:', result6);
-  })
-  .catch((error) => {
-    console.log('6 error:', error);
-  });
+// const did = 5;
+// deleteData(did)
+//   .then((result6) => {
+//     console.log('6 result:', result6);
+//   })
+//   .catch((error) => {
+//     console.log('6 error:', error);
+//   });
 
 /** Promise */
 /*
@@ -319,11 +356,14 @@ const deleteData = did => new Promise((resolve, reject) => {
  */
 /** async await */
 const sortByPrice = async (orderby) => {
+  if (!(orderby === 'asc' || orderby === 'desc')) {
+    return null;
+  }
   try {
     const newJson = await getAlbumData();
     if (orderby === 'desc') {
       newJson.sort((x, y) => (x.price < y.price ? 1 : -1));
-    } else {
+    } else if (orderby === 'asc') {
       newJson.sort((x, y) => (x.price > y.price ? 1 : -1));
     }
     return newJson;
@@ -332,14 +372,14 @@ const sortByPrice = async (orderby) => {
   }
 };
 
-const orderby = 'asc';// 'desc'
-sortByPrice(orderby)
-  .then((result7) => {
-    console.log('7 result: ', result7);
-  })
-  .catch((error) => {
-    console.log('7 error: ', error);
-  });
+// const orderby = 'asc'; //'desc';
+// sortByPrice(orderby)
+//   .then((result7) => {
+//     console.log('7 result: ', result7);
+//   })
+//   .catch((error) => {
+//     console.log('7 error: ', error);
+//   });
 
 /** Promise */
 /*
@@ -358,3 +398,14 @@ const sortByPrice = orderby => new Promise((resolve, reject) => {
     });
 });
 */
+
+
+module.exports = {
+  cloneArray,
+  searchId,
+  searchTitle,
+  insertData,
+  updateData,
+  deleteData,
+  sortByPrice,
+};

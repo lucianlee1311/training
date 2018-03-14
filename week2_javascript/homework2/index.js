@@ -156,7 +156,7 @@ const convertDecimal = (binary) => {
  */
 
 const convertBinary = (decimal) => {
-  if (!(/^-?\d+$/.test(decimal))) {
+  if (!(/^\d+$/.test(decimal) && Number.isInteger(decimal))) {
     return null;
   }
   const binary = decimal.toString(2);
@@ -183,7 +183,7 @@ const convertBinary = (decimal) => {
  */
 
 const addDigit = (num) => {
-  if (!(/^\d+$/.test(num))) {
+  if (!(/^\d+$/.test(num) && Number.isInteger(num))) {
     return null;
   }
   let strNumArray = [];
@@ -198,7 +198,7 @@ const addDigit = (num) => {
   return result;
 };
 
-// const num = 38;
+// const num = -38;
 // const result7 = addDigit(num);
 // console.log('result7:', result7);
 
@@ -210,7 +210,8 @@ const addDigit = (num) => {
  */
 
 const reverseInt = (num) => {
-  if (!(/^-?\d+$/.test(num))) {
+  // if (!(/^-?\d+$/.test(num) && Number.isInteger(num))) {
+  if (!(Number.isInteger(num))) {
     return null;
   }
   const strNum = Math.abs(num).toString();
@@ -222,7 +223,7 @@ const reverseInt = (num) => {
   return result;
 };
 
-// const num8 = -123;
+// const num8 = 123;
 // const result8 = reverseInt(num8);
 // console.log('result8:', result8);
 

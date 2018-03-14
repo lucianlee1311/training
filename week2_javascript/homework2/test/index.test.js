@@ -79,6 +79,10 @@ test('convertBinary(): input 非數字', () => {
   expect(func.convertBinary('abc')).toBeNull();
 });
 
+test('convertBinary(): input 非數字', () => {
+  expect(func.convertBinary('65')).toBeNull();
+});
+
 
 /** func7 addDigit */
 test('addDigit(): input 數字', () => {
@@ -87,6 +91,10 @@ test('addDigit(): input 數字', () => {
 
 test('addDigit(): input 非數字', () => {
   expect(func.addDigit('abc')).toBeNull();
+});
+
+test('addDigit(): input 非數字', () => {
+  expect(func.addDigit('38')).toBeNull();
 });
 
 
@@ -101,4 +109,8 @@ test('reverseInt(): input 數字', () => {
 
 test('reverseInt(): input 非數字', () => {
   expect(func.reverseInt('abc')).toBeNull();
+});
+
+test('reverseInt(): input 非數字', () => {
+  expect(func.reverseInt('234')).toBeNull();
 });
