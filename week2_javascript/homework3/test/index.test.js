@@ -554,30 +554,36 @@ test('cloneArray(): input 字串', () => {
 
 
 /** func2 searchId */
-test('searchId(): input 5', () => {
-  expect(func.searchId(5)).resolves.toMatchObject(output2);
+test('searchId(): input 5', async () => {
+  expect.assertions(1);
+  await expect(func.searchId(5)).resolves.toMatchObject(output2);
 });
 
-test('searchId(): input 字串', () => {
-  expect(func.searchId('5')).resolves.toBeNull();
+test('searchId(): input 字串', async () => {
+  expect.assertions(1);
+  await expect(func.searchId('5')).resolves.toBeNull();
 });
 
-test('searchId(): input 0', () => {
-  expect(func.searchId(0)).resolves.toBeNull();
+test('searchId(): input 0', async () => {
+  expect.assertions(1);
+  await expect(func.searchId(0)).resolves.toBeNull();
 });
 
-test('searchId(): input 100', () => {
-  expect(func.searchId(100)).resolves.toBe(undefined);
+test('searchId(): input 100', async () => {
+  expect.assertions(1);
+  await expect(func.searchId(100)).resolves.toBe(undefined);
 });
 
 
 /** func3 searchTitle */
-test('searchTitle(): input 字串', () => {
-  expect(func.searchTitle('美好')).resolves.toMatchObject(output3);
+test('searchTitle(): input 字串', async () => {
+  expect.assertions(1);
+  await expect(func.searchTitle('美好')).resolves.toMatchObject(output3);
 });
 
-test('searchTitle(): input 非字串', () => {
-  expect(func.searchTitle(123)).resolves.toBeNull();
+test('searchTitle(): input 非字串', async () => {
+  expect.assertions(1);
+  await expect(func.searchTitle(123)).resolves.toBeNull();
 });
 
 
@@ -601,32 +607,39 @@ const inputData45 = {
   id: 99, img: 'xxx', title: 'xxx', desc: 'xxx',
 };
 
-test('insertData(): input Object', () => {
-  expect(func.insertData(inputData4)).resolves.toMatchObject(output4);
+test('insertData(): input Object', async () => {
+  expect.assertions(1);
+  await expect(func.insertData(inputData4)).resolves.toMatchObject(output4);
 });
 
-test('insertData(): input 非Object', () => {
-  expect(func.insertData('data')).resolves.toBeNull();
+test('insertData(): input 非Object', async () => {
+  expect.assertions(1);
+  await expect(func.insertData('data')).resolves.toBeNull();
 });
 
-test('insertData(): input Object少id', () => {
-  expect(func.insertData(inputData41)).resolves.toBeNull();
+test('insertData(): input Object少id', async () => {
+  expect.assertions(1);
+  await expect(func.insertData(inputData41)).resolves.toBeNull();
 });
 
-test('insertData(): input Object少img', () => {
-  expect(func.insertData(inputData42)).resolves.toBeNull();
+test('insertData(): input Object少img', async () => {
+  expect.assertions(1);
+  await expect(func.insertData(inputData42)).resolves.toBeNull();
 });
 
-test('insertData(): input Object少title', () => {
-  expect(func.insertData(inputData43)).resolves.toBeNull();
+test('insertData(): input Object少title', async () => {
+  expect.assertions(1);
+  await expect(func.insertData(inputData43)).resolves.toBeNull();
 });
 
-test('insertData(): input Object少desc', () => {
-  expect(func.insertData(inputData44)).resolves.toBeNull();
+test('insertData(): input Object少desc', async () => {
+  expect.assertions(1);
+  await expect(func.insertData(inputData44)).resolves.toBeNull();
 });
 
-test('insertData(): input Object少price', () => {
-  expect(func.insertData(inputData45)).resolves.toBeNull();
+test('insertData(): input Object少price', async () => {
+  expect.assertions(1);
+  await expect(func.insertData(inputData45)).resolves.toBeNull();
 });
 
 
@@ -642,54 +655,66 @@ const inputData52 = {
   title: '修改title',
 };
 
-test('updateData(): input 數字, Object', () => {
-  expect(func.updateData(inputId5, inputData5)).resolves.toMatchObject(output5);
+test('updateData(): input 數字, Object', async () => {
+  expect.assertions(1);
+  await expect(func.updateData(inputId5, inputData5)).resolves.toMatchObject(output5);
 });
 
-test('updateData(): input 數字, 非Object', () => {
-  expect(func.updateData(inputId5, 'abc')).resolves.toBeNull();
+test('updateData(): input 數字, 非Object', async () => {
+  expect.assertions(1);
+  await expect(func.updateData(inputId5, 'abc')).resolves.toBeNull();
 });
 
-test('updateData(): input 非數字, Object', () => {
-  expect(func.updateData('abc', inputData5)).resolves.toBeNull();
+test('updateData(): input 非數字, Object', async () => {
+  expect.assertions(1);
+  await expect(func.updateData('abc', inputData5)).resolves.toBeNull();
 });
 
-test('updateData(): input 非數字, Object', () => {
-  expect(func.updateData('3', inputData5)).resolves.toBeNull();
+test('updateData(): input 非數字, Object', async () => {
+  expect.assertions(1);
+  await expect(func.updateData('3', inputData5)).resolves.toBeNull();
 });
 
-test('updateData(): input 數字, Object少title', () => {
-  expect(func.updateData(inputId5, inputData51)).resolves.toBeNull();
+test('updateData(): input 數字, Object少title', async () => {
+  expect.assertions(1);
+  await expect(func.updateData(inputId5, inputData51)).resolves.toBeNull();
 });
 
-test('updateData(): input 數字, Object少desc', () => {
-  expect(func.updateData(inputId5, inputData52)).resolves.toBeNull();
+test('updateData(): input 數字, Object少desc', async () => {
+  expect.assertions(1);
+  await expect(func.updateData(inputId5, inputData52)).resolves.toBeNull();
 });
 
 
 /** func6 deleteData */
-test('deleteData(): input 數字', () => {
-  expect(func.deleteData(5)).resolves.toMatchObject(output6);
+test('deleteData(): input 數字', async () => {
+  expect.assertions(1);
+  await expect(func.deleteData(5)).resolves.toMatchObject(output6);
 });
 
-test('deleteData(): input 非數字', () => {
-  expect(func.deleteData('abc')).resolves.toBeNull();
+test('deleteData(): input 非數字', async () => {
+  expect.assertions(1);
+  await expect(func.deleteData('abc')).resolves.toBeNull();
 });
 
-test('deleteData(): input 非數字', () => {
-  expect(func.deleteData('5')).resolves.toBeNull();
+test('deleteData(): input 非數字', async () => {
+  expect.assertions(1);
+  await expect(func.deleteData('5')).resolves.toBeNull();
 });
 
 
 /** func7 sortByPrice */
-test('sortByPrice(): input asc', () => {
-  expect(func.sortByPrice('asc')).resolves.toMatchObject(outputAsc7);
+test('sortByPrice(): input asc', async () => {
+  expect.assertions(1);
+  await expect(func.sortByPrice('asc')).resolves.toMatchObject(outputAsc7);
 });
 
-test('sortByPrice(): input desc', () => {
-  expect(func.sortByPrice('desc')).resolves.toMatchObject(outputDesc7);
+test('sortByPrice(): input desc', async () => {
+  expect.assertions(1);
+  await expect(func.sortByPrice('desc')).resolves.toMatchObject(outputDesc7);
 });
 
-test('sortByPrice(): input test', () => {
-  expect(func.sortByPrice('test')).resolves.toBeNull();
+test('sortByPrice(): input test', async () => {
+  expect.assertions(1);
+  await expect(func.sortByPrice('test')).resolves.toBeNull();
 });
