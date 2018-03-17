@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="./css/reset.css">
+  <link rel="stylesheet" type="text/css" href="./css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script src="./js/index.js"></script>
+  <title>Machine</title>
+</head>
+<body>
+  <div class="global-container">
+    <!-- menu start -->
+    <div class="menu">
+
+      <div class="menu-title">
+        IVM LOGO
+      </div>
+
+      <div class="menu-list">
+        <ol>
+          <li class="panel">
+            <a class="menu-item panel-heading">
+              <div><i class="fa fa-list-alt menu-item-font"></i>Dealer Managemnet</div>
+            </a>
+            <div class="panel-collapse collapse in">
+              <a class="menu-sub-item" href="#sub1">
+                <p>Test1</p>
+              </a>
+              <a class="menu-sub-item" href="#sub2">
+                <p>Test2</p>
+              </a>
+            </div>
+          </li>
+          <li class="panel">
+            <a class="menu-item panel-heading" >
+              <div><i class="fa fa-user-o menu-item-font"></i>User Managemnet</div>
+            </a>
+            <div class="panel-collapse collapse in">
+              <a class="menu-sub-item" href="#">
+                <p>Test1</p>
+              </a>
+              <a class="menu-sub-item" href="#">
+                <p>Test2</p>
+              </a>
+            </div>
+          </li>
+          <li class="panel">
+            <a class="menu-item panel-heading">
+              <div><i class="fa fa-thumb-tack menu-item-font"></i>Machine Managemnet</div>
+            </a>
+            <div class="panel-collapse collapse in">
+              <a class="menu-sub-item" href="#">
+                <p>Model List</p>
+              </a>
+              <a class="menu-sub-item" href="#">
+                <p>Model List</p>
+              </a>
+              <a class="menu-sub-item" href="#">
+                <p>Machine List</p>
+              </a>
+            </div>
+          </li>
+          <li class="panel">
+            <a class="menu-item panel-heading">
+              <div><i class="fa fa-file-o menu-item-font"></i>Merchandise Managemnet</div>
+            </a>
+            <div class="panel-collapse collapse in">
+              <a class="menu-sub-item" href="#">
+                <p>Test1</p>
+              </a>
+              <a class="menu-sub-item" href="#">
+                <p>Test2</p>
+              </a>
+            </div>
+          </li>
+          <li class="panel">
+            <a class="menu-item panel-heading">
+              <div><i class="fa fa-comment-o menu-item-font"></i>Advertising Managemnet</div>
+            </a>
+            <div class="panel-collapse collapse in">
+              <a class="menu-sub-item" href="#">
+                <p>Test1</p>
+              </a>
+              <a class="menu-sub-item" href="#">
+                <p>Test2</p>
+              </a>
+            </div>
+          </li>
+          <li class="panel">
+            <a class="menu-item panel-heading">
+              <div><i class="fa fa-pie-chart menu-item-font"></i>Market Managemnet</div>
+            </a>
+            <div class="panel-collapse collapse in">
+              <a class="menu-sub-item" href="#">
+                <p>Sale Analysis</p>
+              </a>
+              <a class="menu-sub-item" href="#">
+                <p>AD Analysis</p>
+              </a>
+            </div>
+          </li>
+          <li class="panel">
+            <a class="menu-item panel-heading">
+              <div><i class="fa fa-th-list menu-item-font"></i>System Setting</div>
+            </a>
+            <div class="panel-collapse collapse in">
+              <a class="menu-sub-item" href="#">
+                <p>Test1</p>
+              </a>
+              <a class="menu-sub-item" href="#">
+                <p>Test2</p>
+              </a>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- content start -->
+    <div class="content">
+      <!-- content-header start -->
+      <div class="content-header">
+        <ol class="bread-crumb">
+          <li>Machine Management</li>
+          <li class="active">Model List</li>
+        </ol>
+        <div class="profile">
+          <div class="user-name">
+            User Name
+          </div>
+          <div class="user-picture-example">
+          </div>
+        </div>
+      </div>
+      <!-- content-header end -->
+      
+      <!-- content-title start -->
+      <div class="content-title">
+        Machine List
+      </div>
+      <!-- content-title end -->
+
+      <!-- content-search start -->
+      <div class="content-search">
+        <div class="search-group">
+          <div>
+            <input class="search-input" type="text" name="keyword" placeholder="keyword"/>
+            <button class="search-button">Search</button>          
+          </div>
+          <div class="open-advanced-search">
+            <i class="fa fa-search circle"></i>Advanced Search
+          </div>
+        </div>
+        <div class="open-add-machine" data-toggle="modal" data-target="#addMachineModal">
+          <i class="fa fa-plus circle"></i>Add Machine
+        </div>
+
+        <!-- advanced-search start -->
+        <div class="advanced-search hidden">
+          <div>
+            <input class="advanced-input" type="text" name="advanced-keyword" placeholder="keyword">
+          </div>
+          <div class="advanced-type">
+            <div>Packaging Type</div>
+            <select>
+              <option value="CAN">CAN</option>
+              <option value="CAN2">CAN2</option>
+              <option value="CAN3">CAN3</option>
+              <option value="CAN4">CAN4</option>
+            </select>
+          </div>
+          <div class="advanced-button-group">
+            <button class="advanced-button do-close">Close</button>
+            <button class="advanced-button do-search">Search</button>
+          </div>
+        </div>
+        <!-- advanced-search end -->
+
+      </div>
+      <!-- content-search end -->
+
+      <!-- content-table start -->
+      <div class="content-table">
+        <table class="table table-hover table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Device ID</th>
+              <th scope="col">Model</th>
+              <th scope="col">Status</th>
+              <th scope="col">Machine Temp</th>
+              <th scope="col">Address</th>
+              <th scope="col">Region</th>
+              <th scope="col">Details</th>
+              <th scope="col">Setup</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row"><div class="id-box-error">001</div></th>
+              <td>AK1</td>
+              <!-- <td><div class="status-box error">Error</div></td> -->
+              <td><div class="status-box error">Error</div></td>
+              <td>4°C</td>
+              <td>台北市大安區大安里新生南路二段新生段1號21樓(大安森林公園 - 西側)</td>
+              <td>大安區</td>
+              <td colspan="2">
+                <div class="status-box-large">
+                  <i class="fa fa-list-alt row-detail" data-toggle="modal" data-target="#machineDetailModal"></i>
+                  <i class="fa fa-pencil-square-o row-edit"></i>
+                  <i class="fa fa-trash-o row-remove" data-toggle="modal" data-target="#removeMachineModal"></i>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row"><div class="id-box-online">002</div></th>
+              <td>AK1</td>
+              <td><div class="status-box online">Online</div></td>
+              <td>0°C</td>
+              <td>台北市大安區大安里新生南路二段新生段1號21樓(大安森林公園 - 西側)</td>
+              <td>大安區</td>
+              <td colspan="2">
+                <div class="status-box-large">
+                  <i class="fa fa-list-alt row-detail" data-toggle="modal" data-target="#machineDetailModal"></i>
+                  <i class="fa fa-pencil-square-o row-edit"></i>
+                  <i class="fa fa-trash-o row-remove" data-toggle="modal" data-target="#removeMachineModal"></i>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row"><div class="id-box-offline">003</div></th>
+              <td>AK3</td>
+              <td><div class="status-box offline">Offline</div></td>
+              <td>4.3°C</td>
+              <td>台北市大安區大安里新生南路二段新生段1號21樓(大安森林公園 - 西側)</td>
+              <td>大安區</td>
+              <td colspan="2">
+                <div class="status-box-large">
+                  <i class="fa fa-list-alt row-detail" data-toggle="modal" data-target="#machineDetailModal"></i>
+                  <i class="fa fa-pencil-square-o row-edit"></i>
+                  <i class="fa fa-trash-o row-remove" data-toggle="modal" data-target="#removeMachineModal"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- content-table end -->
+
+      <!-- content-paging start -->
+      <div class="content-paging">
+        <div class="paging-infomation">
+          <div>3 Models</div>
+        </div>
+        <nav aria-label="pagination">
+          <ul class="pagination">
+            <li class="page-item disabled"><a class="page-link"><i class="fa fa-angle-double-left"></i></a></li>
+            <li class="page-item disabled">
+              <a class="page-link" aria-label="Previous">
+                <span aria-hidden="true"><i class="fa fa-angle-left"></i></span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">5</a></li>
+            <li class="page-item">
+              <a class="page-link" aria-label="Next">
+                <span aria-hidden="true"><i class="fa fa-angle-right"></i></span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+            <li class="page-item"><a class="page-link"><i class="fa fa-angle-double-right"></i></a></li>
+          </ul>
+        </nav>
+      </div>
+      <!-- content-paging end -->
+
+    </div>
+    <!-- content end -->
+
+  </div>
+
+
+  <!-- add Machine Modal start -->
+  <div class="modal fade" id="addMachineModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">New Machine</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group row">
+              <label for="addDeviceID" class="col-sm-2 col-form-label">Device ID</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="addDeviceID" placeholder="Device ID">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addModel" class="col-sm-2 col-form-label">Model</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="addModel" placeholder="Model">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addStatus" class="col-sm-2 col-form-label">Status</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="addStatus" placeholder="Status">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addTemp" class="col-sm-2 col-form-label">Machine Temp</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="addTemp" placeholder="Machine Temp">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addAddress" class="col-sm-2 col-form-label">Address</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="addAddress" placeholder="Model">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addRegion" class="col-sm-2 col-form-label">Region</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="addRegion" placeholder="Region">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <!-- add Machine Modal end -->
+
+  <!-- Machine Detail Modal start -->
+  <div class="modal fade" id="machineDetailModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Machine Detail</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group row">
+              <label for="addDeviceID" class="col-sm-2 col-form-label">Device ID</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="addDeviceID" disabled>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addModel" class="col-sm-2 col-form-label">Model</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="addModel" disabled>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addStatus" class="col-sm-2 col-form-label">Status</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="addStatus" disabled>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addTemp" class="col-sm-2 col-form-label">Machine Temp</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="addTemp" disabled>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addAddress" class="col-sm-2 col-form-label">Address</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="addAddress" disabled>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addRegion" class="col-sm-2 col-form-label">Region</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="addRegion" disabled>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <!-- Machine Detail Modal end -->
+
+  <!-- Remove Modal start -->
+  <div class="modal fade" id="removeMachineModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Remove Machine</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label">Confirm to remove?</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <!-- Remove Machine Modal end -->
+
+</body>
+</html>
