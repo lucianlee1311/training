@@ -12,6 +12,10 @@ ul li a {
   visibility: hidden;
 }
 
+.align-center {
+  text-align: center;
+}
+
 .global-container {
   width: 100%;
   display: flex;
@@ -189,6 +193,7 @@ ul li a {
   }
 
   .content-search {
+    position: relative;
     width: 100%;
     height: 60px;
     background-color: #E8E8E8;
@@ -240,8 +245,8 @@ ul li a {
       z-index: 1;
       width: 535px;
       height: 175px;
-      left: 265px;
-      bottom: 460px;
+      left: 0px;
+      bottom: -120px;
       background-color: #FFFFFF;
       border-radius: 5px;
       border:1px solid #ECECEC;
@@ -343,13 +348,16 @@ ul li a {
     tbody tr th {
       position: relative;
       height: 80px;
-      padding-top: 25px;
+      /*padding-top: 25px;*/
       text-align: center;
+      vertical-align:middle;
     }
     tbody tr td {
       height: 80px;
-      padding-top: 25px;
-      text-align: center;
+      /*padding-top: 25px;*/
+      /*text-align: center;*/
+      vertical-align:middle;
+      
     }
     tbody:before {
       line-height: 10px;
@@ -397,7 +405,12 @@ ul li a {
       left: 0px;
       bottom: 0px;
     }
-
+    .status-text {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
     .status-box {
        width: 60px;
        height: 20px;
@@ -421,20 +434,81 @@ ul li a {
        }
     }
 
-    .status-box-large {
+    .action-box {
       display: flex;
       flex-direction: row;
-      justify-content: space-evenly;
+      justify-content: space-around;
+
+
+      .row-detail {
+        cursor: pointer;
+      }
+      .row-edit {
+        cursor: pointer;
+      }
+      .row-remove {
+        cursor: pointer;
+      }
     }
 
-    .row-detail {
+    .action-box.disabled {
+      color: #CECECE;
+      
+      .row-detail {
+        cursor: default;
+      }
+      .row-edit {
+        cursor: default;
+      }
+      .row-remove {
+        cursor: default;
+      }
+    }
+
+
+
+    .action-box-right {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+    }
+    .row-close {
+      /*font-size: 24px;*/
       cursor: pointer;
     }
-    .row-edit {
+    .row-check {
+      /*font-size: 24px;*/
       cursor: pointer;
     }
-    .row-remove {
-      cursor: pointer;
+
+    tbody tr:nth-child(odd) .row-example {
+      width: 24px;
+      height: 24px;
+      background: #F4F4F4;
+    }
+    tbody tr:nth-child(even) .row-example{
+      width: 24px;
+      height: 24px;
+      background: #E8E8E8;
+    }
+
+    .input-address {
+      width: 100%;
+
+      box-sizing: border-box;      
+      padding: 5px;
+
+      border: 1px solid #D7D7D7;
+      border-radius: 5px;
+    }
+    .input-region {
+      width: 100%;
+
+      box-sizing: border-box;
+      padding: 5px;
+
+      border: 1px solid #D7D7D7;
+      border-radius: 5px;
     }
   }
 

@@ -7,7 +7,8 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <script src="./js/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
+  <script type="text/javascript" src="./js/index.js"></script>
   <title>Machine</title>
 </head>
 <body>
@@ -18,106 +19,33 @@
       <div class="menu-title">
         IVM LOGO
       </div>
-
+       
+      <div id="menu-list-entry"></div>
+      <script id="menu-list-tpl" type="text/template">
+      {{#page}}
       <div class="menu-list">
         <ol>
+          {{#list}}
           <li class="panel">
             <a class="menu-item panel-heading">
-              <div><i class="fa fa-list-alt menu-item-font"></i>Dealer Managemnet</div>
+              <div><i class="{{menuIcon}} menu-item-font" data-menu-id={{menuId}}></i>{{menuName}}</div>
             </a>
             <div class="panel-collapse collapse in">
-              <a class="menu-sub-item" href="#sub1">
-                <p>Test1</p>
+              {{#submenu}}
+              <a class="menu-sub-item" href="#{{subMenuHref}}" data-submenu-id={{subMenuId}}>
+                <p>{{subMenuName}}</p>
               </a>
-              <a class="menu-sub-item" href="#sub2">
-                <p>Test2</p>
-              </a>
+              {{/submenu}}
             </div>
           </li>
-          <li class="panel">
-            <a class="menu-item panel-heading" >
-              <div><i class="fa fa-user-o menu-item-font"></i>User Managemnet</div>
-            </a>
-            <div class="panel-collapse collapse in">
-              <a class="menu-sub-item" href="#">
-                <p>Test1</p>
-              </a>
-              <a class="menu-sub-item" href="#">
-                <p>Test2</p>
-              </a>
-            </div>
-          </li>
-          <li class="panel">
-            <a class="menu-item panel-heading">
-              <div><i class="fa fa-thumb-tack menu-item-font"></i>Machine Managemnet</div>
-            </a>
-            <div class="panel-collapse collapse in">
-              <a class="menu-sub-item" href="#">
-                <p>Model List</p>
-              </a>
-              <a class="menu-sub-item" href="#">
-                <p>Model List</p>
-              </a>
-              <a class="menu-sub-item" href="#">
-                <p>Machine List</p>
-              </a>
-            </div>
-          </li>
-          <li class="panel">
-            <a class="menu-item panel-heading">
-              <div><i class="fa fa-file-o menu-item-font"></i>Merchandise Managemnet</div>
-            </a>
-            <div class="panel-collapse collapse in">
-              <a class="menu-sub-item" href="#">
-                <p>Test1</p>
-              </a>
-              <a class="menu-sub-item" href="#">
-                <p>Test2</p>
-              </a>
-            </div>
-          </li>
-          <li class="panel">
-            <a class="menu-item panel-heading">
-              <div><i class="fa fa-comment-o menu-item-font"></i>Advertising Managemnet</div>
-            </a>
-            <div class="panel-collapse collapse in">
-              <a class="menu-sub-item" href="#">
-                <p>Test1</p>
-              </a>
-              <a class="menu-sub-item" href="#">
-                <p>Test2</p>
-              </a>
-            </div>
-          </li>
-          <li class="panel">
-            <a class="menu-item panel-heading">
-              <div><i class="fa fa-pie-chart menu-item-font"></i>Market Managemnet</div>
-            </a>
-            <div class="panel-collapse collapse in">
-              <a class="menu-sub-item" href="#">
-                <p>Sale Analysis</p>
-              </a>
-              <a class="menu-sub-item" href="#">
-                <p>AD Analysis</p>
-              </a>
-            </div>
-          </li>
-          <li class="panel">
-            <a class="menu-item panel-heading">
-              <div><i class="fa fa-th-list menu-item-font"></i>System Setting</div>
-            </a>
-            <div class="panel-collapse collapse in">
-              <a class="menu-sub-item" href="#">
-                <p>Test1</p>
-              </a>
-              <a class="menu-sub-item" href="#">
-                <p>Test2</p>
-              </a>
-            </div>
-          </li>
+          {{/list}}
         </ol>
       </div>
+      {{/page}}
+      </script>
+
     </div>
+    <!-- menu end -->
 
     <!-- content start -->
     <div class="content">
@@ -183,7 +111,10 @@
       <!-- content-search end -->
 
       <!-- content-table start -->
-      <div class="content-table">
+      <div id="table-entry"></div>
+      <script id="table-tpl" type="text/template">
+      {{#page}}
+        <div class="content-table">
         <table class="table table-hover table-striped">
           <thead>
             <tr>
@@ -198,62 +129,57 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row"><div class="id-box-error">001</div></th>
-              <td>AK1</td>
-              <!-- <td><div class="status-box error">Error</div></td> -->
-              <td><div class="status-box error">Error</div></td>
-              <td>4°C</td>
-              <td>台北市大安區大安里新生南路二段新生段1號21樓(大安森林公園 - 西側)</td>
-              <td>大安區</td>
-              <td colspan="2">
-                <div class="status-box-large">
-                  <i class="fa fa-list-alt row-detail" data-toggle="modal" data-target="#machineDetailModal"></i>
-                  <i class="fa fa-pencil-square-o row-edit"></i>
-                  <i class="fa fa-trash-o row-remove" data-toggle="modal" data-target="#removeMachineModal"></i>
+            {{#list}}
+            <tr data-machine-id="{{id}}">
+              <th scope="row" ><div class="id-box-{{lowercaseStatus}}">{{id}}</div></th>
+              <td class="align-center">{{model}}</td>
+              <td class="status-text align-center"><div class="status-box {{lowercaseStatus}}">{{status}}</div></td>
+              <td class="align-center">{{temperature}}</td>
+              <td class="address-text">{{address}}</td>
+              <td class="address-edit hidden"><input type="text" name="inputAddress" class="input-address" value={{address}}></td>
+              <td class="region-text align-center">{{region}}</td>
+              <td class="region-edit align-center hidden"><input type="text" name="inputRegion" class="input-region" value={{region}}></td>
+              <td class="action-detail">
+                <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
+                  <i class="row-example"></i>
+                  <i class="fa fa-list-alt fa-lg row-detail" data-toggle="modal" data-target="#machineDetailModal"></i>
+                </div>
+              </td>
+              <td class="action-setup">
+                <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
+                  <i class="fa fa-pencil-square-o fa-lg row-edit"></i>
+                  <i class="fa fa-trash-o fa-lg row-remove" data-toggle="modal" data-target="#removeMachineModal"></i>
+                  <i class="row-example"></i>
+                </div>
+              </td>
+              <td class="action-edit hidden">
+                <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
+                  <i class="row-example"></i>
+                  <i class="fa fa-close row-close fa-lg"></i>
+                  <i class="fa fa-check row-check fa-lg"></i>
                 </div>
               </td>
             </tr>
-            <tr>
-              <th scope="row"><div class="id-box-online">002</div></th>
-              <td>AK1</td>
-              <td><div class="status-box online">Online</div></td>
-              <td>0°C</td>
-              <td>台北市大安區大安里新生南路二段新生段1號21樓(大安森林公園 - 西側)</td>
-              <td>大安區</td>
-              <td colspan="2">
-                <div class="status-box-large">
-                  <i class="fa fa-list-alt row-detail" data-toggle="modal" data-target="#machineDetailModal"></i>
-                  <i class="fa fa-pencil-square-o row-edit"></i>
-                  <i class="fa fa-trash-o row-remove" data-toggle="modal" data-target="#removeMachineModal"></i>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row"><div class="id-box-offline">003</div></th>
-              <td>AK3</td>
-              <td><div class="status-box offline">Offline</div></td>
-              <td>4.3°C</td>
-              <td>台北市大安區大安里新生南路二段新生段1號21樓(大安森林公園 - 西側)</td>
-              <td>大安區</td>
-              <td colspan="2">
-                <div class="status-box-large">
-                  <i class="fa fa-list-alt row-detail" data-toggle="modal" data-target="#machineDetailModal"></i>
-                  <i class="fa fa-pencil-square-o row-edit"></i>
-                  <i class="fa fa-trash-o row-remove" data-toggle="modal" data-target="#removeMachineModal"></i>
-                </div>
-              </td>
-            </tr>
+            {{/list}}
           </tbody>
         </table>
       </div>
+      {{/page}}
+      </script>
       <!-- content-table end -->
 
       <!-- content-paging start -->
       <div class="content-paging">
-        <div class="paging-infomation">
-          <div>3 Models</div>
-        </div>
+
+        <div id="paging-entry"></div>
+        <script id="paging-tpl" type="text/template">
+        {{#page}}
+          <div class="paging-infomation">
+            <div>{{listLength}} Models</div>
+          </div>
+        {{/page}}
+        </script>
+
         <nav aria-label="pagination">
           <ul class="pagination">
             <li class="page-item disabled"><a class="page-link"><i class="fa fa-angle-double-left"></i></a></li>
