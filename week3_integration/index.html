@@ -122,23 +122,23 @@
               <th scope="col">Model</th>
               <th scope="col">Status</th>
               <th scope="col">Machine Temp</th>
-              <th scope="col">Address</th>
-              <th scope="col">Region</th>
+              <th scope="col" style="width:32%">Address</th>
+              <th scope="col" style="width:8%">Region</th>
               <th scope="col">Details</th>
-              <th scope="col">Setup</th>
+              <th scope="col" style="width:14%">Setup</th>
             </tr>
           </thead>
           <tbody>
             {{#list}}
             <tr data-machine-id="{{id}}">
               <th scope="row" ><div class="id-box-{{lowercaseStatus}}">{{id}}</div></th>
-              <td class="align-center">{{model}}</td>
+              <td class="model-text align-center">{{model}}</td>
               <td class="status-text align-center"><div class="status-box {{lowercaseStatus}}">{{status}}</div></td>
-              <td class="align-center">{{temperature}}</td>
+              <td class="temperature-text align-center">{{temperature}}</td>
               <td class="address-text">{{address}}</td>
-              <td class="address-edit hidden"><input type="text" name="inputAddress" class="input-address" value={{address}}></td>
+              <td class="address-edit hidden"><input type="text" name="inputAddress" class="input-address" value="{{address}}"></td>
               <td class="region-text align-center">{{region}}</td>
-              <td class="region-edit align-center hidden"><input type="text" name="inputRegion" class="input-region" value={{region}}></td>
+              <td class="region-edit align-center hidden"><input type="text" name="inputRegion" class="input-region" value="{{region}}"></td>
               <td class="action-detail">
                 <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
                   <i class="row-example"></i>
@@ -155,8 +155,8 @@
               <td class="action-edit hidden">
                 <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
                   <i class="row-example"></i>
-                  <i class="fa fa-close row-close fa-lg"></i>
-                  <i class="fa fa-check row-check fa-lg"></i>
+                  <i class="fa fa-close fa-lg row-close"></i>
+                  <i class="fa fa-check fa-lg row-check"></i>
                 </div>
               </td>
             </tr>
@@ -223,47 +223,52 @@
         </div>
         <div class="modal-body">
           <form>
-            <div class="form-group row">
+            <!-- <div class="form-group row">
               <label for="addDeviceID" class="col-sm-2 col-form-label">Device ID</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="addDeviceID" placeholder="Device ID">
+                <input type="text" class="form-control" name="addDeviceID" placeholder="Device ID">
               </div>
-            </div>
+            </div> -->
             <div class="form-group row">
               <label for="addModel" class="col-sm-2 col-form-label">Model</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="addModel" placeholder="Model">
+                <input type="text" class="form-control" name="addModel" placeholder="model">
               </div>
             </div>
             <div class="form-group row">
               <label for="addStatus" class="col-sm-2 col-form-label">Status</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="addStatus" placeholder="Status">
+                <!-- <input type="text" class="form-control" name="addStatus" placeholder="Status"> -->
+                <select name="addStatus" class="form-control valid">
+                　<option value=0>Online</option>
+                　<option value=1>Offline</option>
+                　<option value=2>Error</option>
+                </select>
               </div>
             </div>
             <div class="form-group row">
-              <label for="addTemp" class="col-sm-2 col-form-label">Machine Temp</label>
+              <label for="addTemperature" class="col-sm-2 col-form-label">Machine Temp</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="addTemp" placeholder="Machine Temp">
+                <input type="number" class="form-control" name="addTemperature" placeholder="1.0">
               </div>
             </div>
             <div class="form-group row">
               <label for="addAddress" class="col-sm-2 col-form-label">Address</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="addAddress" placeholder="Model">
+                <input type="text" class="form-control" name="addAddress" placeholder="address">
               </div>
             </div>
             <div class="form-group row">
               <label for="addRegion" class="col-sm-2 col-form-label">Region</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="addRegion" placeholder="Region">
+                <input type="text" class="form-control" name="addRegion" placeholder="region">
               </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+          <button type="button" class="btn btn-primary btn-add-machine" data-dismiss="modal">Save</button>
         </div>
       </div>
       
@@ -283,39 +288,39 @@
         <div class="modal-body">
           <form>
             <div class="form-group row">
-              <label for="addDeviceID" class="col-sm-2 col-form-label">Device ID</label>
+              <label for="editDeviceId" class="col-sm-2 col-form-label">Device ID</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="addDeviceID" disabled>
+                <input type="text" class="form-control" name="editDeviceId" disabled>
               </div>
             </div>
             <div class="form-group row">
-              <label for="addModel" class="col-sm-2 col-form-label">Model</label>
+              <label for="editModel" class="col-sm-2 col-form-label">Model</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="addModel" disabled>
+                <input type="text" class="form-control" name="editModel" disabled>
               </div>
             </div>
             <div class="form-group row">
-              <label for="addStatus" class="col-sm-2 col-form-label">Status</label>
+              <label for="editStatus" class="col-sm-2 col-form-label">Status</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="addStatus" disabled>
+                <input type="text" class="form-control" name="editStatus" disabled>
               </div>
             </div>
             <div class="form-group row">
-              <label for="addTemp" class="col-sm-2 col-form-label">Machine Temp</label>
+              <label for="editTemperature" class="col-sm-2 col-form-label">Machine Temp</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="addTemp" disabled>
+                <input type="text" class="form-control" name="editTemperature" disabled>
               </div>
             </div>
             <div class="form-group row">
-              <label for="addAddress" class="col-sm-2 col-form-label">Address</label>
+              <label for="editAddress" class="col-sm-2 col-form-label">Address</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="addAddress" disabled>
+                <input type="text" class="form-control" name="editAddress" disabled>
               </div>
             </div>
             <div class="form-group row">
-              <label for="addRegion" class="col-sm-2 col-form-label">Region</label>
+              <label for="editRegion" class="col-sm-2 col-form-label">Region</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="addRegion" disabled>
+                <input type="text" class="form-control" name="editRegion" disabled>
               </div>
             </div>
           </form>
