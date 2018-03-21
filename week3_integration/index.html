@@ -1,217 +1,226 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <link rel="stylesheet" type="text/css" href="./css/reset.css">
-  <link rel="stylesheet" type="text/css" href="./css/style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
-  <script type="text/javascript" src="./js/index.js"></script>
-  <title>Machine</title>
+    <link rel="stylesheet" type="text/css" href="./css/reset.css">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
+    <script type="text/javascript" src="./js/index.js"></script>
+    <title>Machine</title>
 </head>
 <body>
-  <div class="global-container">
-    <!-- menu start -->
-    <div class="menu">
-
-      <div class="menu-title">
-        IVM LOGO
-      </div>
-       
-      <div id="menu-list-entry"></div>
-      <script id="menu-list-tpl" type="text/template">
-      {{#page}}
-      <div class="menu-list">
-        <ol>
-          {{#list}}
-          <li class="panel">
-            <a class="menu-item panel-heading">
-              <div><i class="{{menuIcon}} menu-item-font" data-menu-id={{menuId}}></i>{{menuName}}</div>
-            </a>
-            <div class="panel-collapse collapse in">
-              {{#submenu}}
-              <a class="menu-sub-item" href="#{{subMenuHref}}" data-submenu-id={{subMenuId}}>
-                <p>{{subMenuName}}</p>
-              </a>
-              {{/submenu}}
-            </div>
-          </li>
-          {{/list}}
-        </ol>
-      </div>
-      {{/page}}
-      </script>
-
-    </div>
-    <!-- menu end -->
-
-    <!-- content start -->
-    <div class="content">
-      <!-- content-header start -->
-      <div class="content-header">
-        <ol class="bread-crumb">
-          <li>Machine Management</li>
-          <li class="active">Model List</li>
-        </ol>
-        <div class="profile">
-          <div class="user-name">
-            User Name
-          </div>
-          <div class="user-picture-example">
-          </div>
+    <!-- <div id="app"></div> -->
+    
+    <div class="global-container">
+      <!-- menu start -->
+      <div class="menu">
+  
+        <div class="menu-title">
+          IVM LOGO
         </div>
-      </div>
-      <!-- content-header end -->
-      
-      <!-- content-title start -->
-      <div class="content-title">
-        Machine List
-      </div>
-      <!-- content-title end -->
-
-      <!-- content-search start -->
-      <div class="content-search">
-        <div class="search-group">
-          <div>
-            <input class="search-input" type="text" name="keyword" placeholder="keyword"/>
-            <button class="search-button">Search</button>          
-          </div>
-          <div class="open-advanced-search">
-            <i class="fa fa-search circle"></i>Advanced Search
-          </div>
-        </div>
-        <div class="open-add-machine" data-toggle="modal" data-target="#addMachineModal">
-          <i class="fa fa-plus circle"></i>Add Machine
-        </div>
-
-        <!-- advanced-search start -->
-        <div class="advanced-search hidden">
-          <div>
-            <input class="advanced-input" type="text" name="advanced-keyword" placeholder="keyword">
-          </div>
-          <div class="advanced-type">
-            <div>Packaging Type</div>
-            <select>
-              <option value="CAN">CAN</option>
-              <option value="CAN2">CAN2</option>
-              <option value="CAN3">CAN3</option>
-              <option value="CAN4">CAN4</option>
-            </select>
-          </div>
-          <div class="advanced-button-group">
-            <button class="advanced-button do-close">Close</button>
-            <button class="advanced-button do-search">Search</button>
-          </div>
-        </div>
-        <!-- advanced-search end -->
-
-      </div>
-      <!-- content-search end -->
-
-      <!-- content-table start -->
-      <div id="table-entry"></div>
-      <script id="table-tpl" type="text/template">
-      {{#page}}
-        <div class="content-table">
-        <table class="table table-hover table-striped">
-          <thead>
-            <tr>
-              <th scope="col">Device ID</th>
-              <th scope="col">Model</th>
-              <th scope="col">Status</th>
-              <th scope="col">Machine Temp</th>
-              <th scope="col" style="width:32%">Address</th>
-              <th scope="col" style="width:8%">Region</th>
-              <th scope="col">Details</th>
-              <th scope="col" style="width:14%">Setup</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#list}}
-            <tr data-machine-id="{{id}}">
-              <th scope="row" ><div class="id-box-{{lowercaseStatus}}">{{id}}</div></th>
-              <td class="model-text align-center">{{model}}</td>
-              <td class="status-text align-center"><div class="status-box {{lowercaseStatus}}">{{status}}</div></td>
-              <td class="temperature-text align-center">{{temperature}}</td>
-              <td class="address-text">{{address}}</td>
-              <td class="address-edit hidden"><input type="text" name="inputAddress" class="input-address" value="{{address}}"></td>
-              <td class="region-text align-center">{{region}}</td>
-              <td class="region-edit align-center hidden"><input type="text" name="inputRegion" class="input-region" value="{{region}}"></td>
-              <td class="action-detail">
-                <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
-                  <i class="row-example"></i>
-                  <i class="fa fa-list-alt fa-lg row-detail" data-toggle="modal" data-target="#machineDetailModal"></i>
-                </div>
-              </td>
-              <td class="action-setup">
-                <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
-                  <i class="fa fa-pencil-square-o fa-lg row-edit"></i>
-                  <i class="fa fa-trash-o fa-lg row-remove" data-toggle="modal" data-target="#removeMachineModal"></i>
-                  <i class="row-example"></i>
-                </div>
-              </td>
-              <td class="action-edit hidden">
-                <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
-                  <i class="row-example"></i>
-                  <i class="fa fa-close fa-lg row-close"></i>
-                  <i class="fa fa-check fa-lg row-check"></i>
-                </div>
-              </td>
-            </tr>
-            {{/list}}
-          </tbody>
-        </table>
-      </div>
-      {{/page}}
-      </script>
-      <!-- content-table end -->
-
-      <!-- content-paging start -->
-      <div class="content-paging">
-
-        <div id="paging-entry"></div>
-        <script id="paging-tpl" type="text/template">
+          
+        <div id="menu-list-entry"></div>
+        <script id="menu-list-tpl" type="text/template">
         {{#page}}
-          <div class="paging-infomation">
-            <div>{{listLength}} Models</div>
-          </div>
+        <div class="menu-list">
+          <ol>
+            {{#list}}
+            <li class="panel">
+              <a class="menu-item panel-heading">
+                  <div>
+                  <i class="{{menuIcon}} menu-item-font" data-menu-id={{menuId}}></i>{{menuName}}
+                  </div>
+              </a>
+              <div class="panel-collapse collapse in">
+                {{#submenu}}
+                <a class="menu-sub-item" href="#{{subMenuHref}}" data-submenu-id={{subMenuId}}>
+                  <p>{{subMenuName}}</p>
+                </a>
+                {{/submenu}}
+              </div>
+            </li>
+            {{/list}}
+          </ol>
+        </div>
         {{/page}}
         </script>
-
-        <nav aria-label="pagination">
-          <ul class="pagination">
-            <li class="page-item disabled"><a class="page-link"><i class="fa fa-angle-double-left"></i></a></li>
-            <li class="page-item disabled">
-              <a class="page-link" aria-label="Previous">
-                <span aria-hidden="true"><i class="fa fa-angle-left"></i></span>
-                <span class="sr-only">Previous</span>
-              </a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">4</a></li>
-            <li class="page-item"><a class="page-link" href="#">5</a></li>
-            <li class="page-item">
-              <a class="page-link" aria-label="Next">
-                <span aria-hidden="true"><i class="fa fa-angle-right"></i></span>
-                <span class="sr-only">Next</span>
-              </a>
-            </li>
-            <li class="page-item"><a class="page-link"><i class="fa fa-angle-double-right"></i></a></li>
-          </ul>
-        </nav>
+  
       </div>
-      <!-- content-paging end -->
-
+      <!-- menu end -->
+  
+      <!-- content start -->
+      <div class="content">
+        <!-- content-header start -->
+        <div class="content-header">
+          <ol class="bread-crumb">
+            <li>Machine Management</li>
+            <li class="active">Model List</li>
+          </ol>
+          <div class="profile">
+            <div class="user-name">
+              User Name
+            </div>
+            <div class="user-picture-example">
+            </div>
+          </div>
+        </div>
+        <!-- content-header end -->
+        
+        <!-- content-title start -->
+        <div class="content-title">
+          Machine List
+        </div>
+        <!-- content-title end -->
+  
+        <!-- content-search start -->
+        <div class="content-search">
+          <div class="search-group">
+            <!-- <div>
+              <input  type="text" class="search-input" type="text" name="searchKeyword" placeholder="keyword"/>
+              <button type="button" class="search-button">Search</button>          
+            </div> -->
+            <div class="input-group">
+              <input type="text" class="form-control" name="searchKeyword" placeholder="keyword" aria-label="Recipient's username" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-outline search-button" type="button">Search</button>
+              </div>
+            </div>
+            <div class="open-advanced-search">
+              <i class="fa fa-search circle"></i>Advanced Search
+            </div>
+          </div>
+          <div class="open-add-machine" data-toggle="modal" data-target="#addMachineModal">
+            <i class="fa fa-plus circle"></i>Add Machine
+          </div>
+  
+          <!-- advanced-search start -->
+          <div class="advanced-search hidden">
+            <div>
+              <input class="advanced-input" type="text" name="advancedKeyword" placeholder="keyword">
+            </div>
+            <div class="advanced-type">
+              <div>Packaging Type</div>
+              <select name="advancedStatus" class="form-control valid">
+                <option value=0>Online</option>
+                <option value=1>Offline</option>
+                <option value=2>Error</option>
+              </select>
+            </div>
+            <div class="advanced-button-group">
+              <button class="advanced-button do-close advanced-close-button">Close</button>
+              <button class="advanced-button do-search advanced-search-button">Search</button>
+            </div>
+          </div>
+          <!-- advanced-search end -->
+  
+        </div>
+        <!-- content-search end -->
+  
+        <!-- content-table start -->
+        <div id="table-entry"></div>
+        <script id="table-tpl" type="text/template">
+        {{#page}}
+          <div class="content-table">
+          <table class="table table-hover table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Device ID</th>
+                <th scope="col">Model</th>
+                <th scope="col">Status</th>
+                <th scope="col">Machine Temp</th>
+                <th scope="col" style="width:32%">Address</th>
+                <th scope="col" style="width:8%">Region</th>
+                <th scope="col">Details</th>
+                <th scope="col" style="width:14%">Setup</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#list}}
+              <tr data-machine-id="{{id}}">
+                <th scope="row"><div class="id-box-{{lowercaseStatus}}">{{id}}</div></th>
+                <td class="align-center">{{model}}</td>
+                <td class="status-text align-center"><div class="status-box {{lowercaseStatus}}">{{status}}</div></td>
+                <td class="align-center">{{temperature}}</td>
+                <td class="address-text">{{address}}</td>
+                <td class="address-edit hidden"><input type="text" name="inputAddress" class="input-address" value="{{address}}"></td>
+                <td class="region-text align-center">{{region}}</td>
+                <td class="region-edit align-center hidden"><input type="text" name="inputRegion" class="input-region" value="{{region}}"></td>
+                <td class="action-detail">
+                  <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
+                    <i class="row-example"></i>
+                    <i class="fa fa-list-alt fa-lg row-detail" data-toggle="modal" data-target="#machineDetailModal"></i>
+                  </div>
+                </td>
+                <td class="action-setup">
+                  <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
+                    <i class="fa fa-pencil-square-o fa-lg row-edit"></i>
+                    <i class="fa fa-trash-o fa-lg row-remove" data-toggle="modal" data-target="#removeMachineModal"></i>
+                    <i class="row-example"></i>
+                  </div>
+                </td>
+                <td class="action-edit hidden">
+                  <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
+                    <i class="row-example"></i>
+                    <i class="fa fa-close fa-lg row-close"></i>
+                    <i class="fa fa-check fa-lg row-check"></i>
+                  </div>
+                </td>
+              </tr>
+              {{/list}}
+            </tbody>
+          </table>
+        </div>
+        {{/page}}
+        </script>
+        <!-- content-table end -->
+  
+        <!-- content-paging start -->
+        <div class="content-paging">
+  
+          <div id="paging-entry"></div>
+          <script id="paging-tpl" type="text/template">
+          {{#page}}
+            <div class="paging-infomation">
+              <div>{{listLength}} Models</div>
+            </div>
+          {{/page}}
+          </script>
+  
+          <nav aria-label="pagination">
+            <ul class="pagination">
+              <li class="page-item disabled"><a class="page-link"><i class="fa fa-angle-double-left"></i></a></li>
+              <li class="page-item disabled">
+                <a class="page-link" aria-label="Previous">
+                  <span aria-hidden="true"><i class="fa fa-angle-left"></i></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item"><a class="page-link" href="#">4</a></li>
+              <li class="page-item"><a class="page-link" href="#">5</a></li>
+              <li class="page-item">
+                <a class="page-link" aria-label="Next">
+                  <span aria-hidden="true"><i class="fa fa-angle-right"></i></span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+              <li class="page-item"><a class="page-link"><i class="fa fa-angle-double-right"></i></a></li>
+            </ul>
+          </nav>
+        </div>
+        <!-- content-paging end -->
+  
+      </div>
+      <!-- content end -->
+  
     </div>
-    <!-- content end -->
-
-  </div>
-
-
+    
+    
   <!-- add Machine Modal start -->
   <div class="modal fade" id="addMachineModal" role="dialog">
     <div class="modal-dialog modal-lg">
@@ -268,7 +277,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary btn-add-machine" data-dismiss="modal">Save</button>
+          <button type="button" class="btn btn-primary add-machine-button" data-dismiss="modal">Submit</button>
         </div>
       </div>
       
@@ -333,32 +342,31 @@
     </div>
   </div>
   <!-- Machine Detail Modal end -->
-
-  <!-- Remove Modal start -->
-  <div class="modal fade" id="removeMachineModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Remove Machine</h4>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="form-group row">
-              <label class="col-sm-12 col-form-label">Confirm to remove?</label>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
-        </div>
-      </div>
+  
+    <!-- Remove Modal start -->
+    <div class="modal fade" id="removeMachineModal" role="dialog">
+      <div class="modal-dialog">
       
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Remove Machine</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group row">
+                <label class="col-sm-12 col-form-label">Confirm to remove?</label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary remove-machine-button" data-dismiss="modal" id="remove-machine-button" data-machine-id="">Submit</button>
+          </div>
+        </div>
+        
+      </div>
     </div>
-  </div>
-  <!-- Remove Machine Modal end -->
-
+    <!-- Remove Machine Modal end -->
 </body>
 </html>
