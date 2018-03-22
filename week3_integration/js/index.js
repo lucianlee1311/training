@@ -1,5 +1,3 @@
-// const fetch = require('node-fetch');
-
 $(document).ready(() => {
   const status = {
     0: 'Online',
@@ -12,7 +10,7 @@ $(document).ready(() => {
     f: `${String.fromCharCode(176)}F`,
   };
 
-  let disableIds = [];
+  const disableIds = [];
   let originalMachineData = null;
 
   const service = {
@@ -24,6 +22,21 @@ $(document).ready(() => {
         .then(res => res.json())
         .then((json) => {
           originalMachineData = JSON.parse(JSON.stringify(json));
+          const newJson = Object.assign([], json);
+          resolve(newJson);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    }),
+
+    getMachineDataByPage: (page, limit) => new Promise((resolve, reject) => {
+      fetch(`https://lucianjson.herokuapp.com/machine?_page=${page}&_limit=${limit}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .then(res => res.json())
+        .then((json) => {
           const newJson = Object.assign([], json);
           resolve(newJson);
         })
@@ -97,8 +110,7 @@ $(document).ready(() => {
     $panels.click((e) => {
       e.stopPropagation();
 
-      const $self = $(e.target);
-      const $selfPanel = $(e.target).parent('.panel');
+      const $self = $(e.currentTarget);
 
       $panels.filter((index, element) => {
         const $node = $(element);
@@ -107,22 +119,21 @@ $(document).ready(() => {
         .slideUp(200);
 
       $('.menu-item').removeClass('active');
-      $self.addClass('active');
+      $self.children('.menu-item').addClass('active');
 
       $('.menu-sub-item').removeClass('active');
-      $selfPanel.children('.panel-collapse').children('.menu-sub-item:nth-child(1)').addClass('active');
+      $self.children('.panel-collapse').children('.menu-sub-item:nth-child(1)').addClass('active');
     });
 
     const $subItem = $('.menu-sub-item');
     $subItem.click((e) => {
       e.stopPropagation();
 
-      const $self = $(e.target);
-
-      const hasActiveClass = $self.closest('.panel').children('.menu-item')
+      const $self = $(e.currentTarget);
+      const $hasActiveClass = $self.closest('.panel').children('.menu-item')
         .hasClass('active');
 
-      if (!hasActiveClass) {
+      if (!$hasActiveClass) {
         $panels.filter((index, element) => {
           const $node = $(element);
           return $node.children('.menu-item').hasClass('active') === true;
@@ -138,20 +149,22 @@ $(document).ready(() => {
       $self.addClass('active');
     });
 
-    $('.open-advanced-search').click(() => {
+    $('.open-advanced-search').click((e) => {
+      e.stopImmediatePropagation();
+
       switchAdvancedSearch();
     });
 
-    $panels.hover((e) => {
-      const $self = $(e.target);
-      const $selfPanel = $(e.target).parent('.panel');
-
-      const $hasActiveClass = $self.hasClass('active');
-      const $submenu = $selfPanel.children('.panel-collapse');
-      if ($submenu.is(':hidden')) {
-        $submenu.slideDown(200);
-      } else if (!$hasActiveClass) {
-        $submenu.slideUp(200);
+    $('.panel, .panel-collapse').hover((e) => {
+      const self = e.currentTarget;
+      if ($('> .panel-collapse', self).length > 0) {
+        $('> .panel-collapse', self).stop().slideDown();
+      }
+    }, (e) => {
+      const self = e.currentTarget;
+      const $hasActiveClass = $(self).children('.menu-item').hasClass('active');
+      if ($('> .panel-collapse', self).length > 0 && !$hasActiveClass) {
+        $('> .panel-collapse', self).stop().slideUp();
       }
     });
 
@@ -222,14 +235,12 @@ $(document).ready(() => {
 
       const newAddress = $trEl.children().children('input[name=inputAddress]').val();
       const newRegion = $trEl.children().children('input[name=inputRegion]').val();
-
       const findRowData = originalMachineData.find(item => item.id === parseInt(id, 10));
       findRowData.address = newAddress;
       findRowData.region = newRegion;
 
       service.updateMachineData(JSON.stringify(findRowData), parseInt(id, 10))
         .then((json) => {
-          console.log(json);
           initTable();
         })
         .catch((error) => {
@@ -245,7 +256,6 @@ $(document).ready(() => {
       const temperature = $trEl.children('.temperature-text').text();
       const address = $trEl.children('.address-text').text();
       const region = $trEl.children('.region-text').text();
-
 
       $('input[name=editDeviceId]').val(id);
       $('input[name=editModel]').val(model);
@@ -276,7 +286,6 @@ $(document).ready(() => {
 
       service.addMachineData(JSON.stringify(newMachineData))
         .then((json) => {
-          console.log(json);
           initTable();
         })
         .catch((error) => {
@@ -293,7 +302,6 @@ $(document).ready(() => {
 
       service.removeMachineData(parseInt(removeId, 10))
         .then((json) => {
-          console.log(json);
           initTable();
         })
         .catch((error) => {
@@ -308,7 +316,9 @@ $(document).ready(() => {
       $('#remove-machine-button').attr('data-machine-id', machineId);
     });
 
-    $('.search-button').click(() => {
+    $('.search-button').click((e) => {
+      e.stopImmediatePropagation();
+
       const searchKeyword = $('input[name=searchKeyword]').val();
       if (searchKeyword !== '') {
         const result = originalMachineData.filter(item => item.model.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || item.address.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1);
@@ -318,7 +328,9 @@ $(document).ready(() => {
       }
     });
 
-    $('.advanced-search-button').click(() => {
+    $('.advanced-search-button').click((e) => {
+      e.stopImmediatePropagation();
+
       const advancedKeyword = $('input[name=advancedKeyword]').val();
       const searchStatus = $('select[name=advancedStatus]').val();
       const result = originalMachineData.filter((item) => {
@@ -332,7 +344,9 @@ $(document).ready(() => {
       switchAdvancedSearch();
     });
 
-    $('.advanced-close-button').click(() => {
+    $('.advanced-close-button').click((e) => {
+      e.stopImmediatePropagation();
+
       switchAdvancedSearch();
     });
   };
@@ -351,18 +365,9 @@ $(document).ready(() => {
   };
 
   const initMenu = () => {
-    const menuData = {
-      page: {
-        list: [],
-      },
-    };
-
     service.getMenuData()
       .then((json) => {
-        menuData.page.list = json;
-        const template = $('#menu-list-tpl').html();
-        const html = Mustache.render(template, menuData);
-        $('#menu-list-entry').html(html);
+        rederMenuData(json);
       })
       .then(() => {
         bindUI();
@@ -370,98 +375,103 @@ $(document).ready(() => {
   };
 
   const initTable = () => {
-    const machineData = {
-      page: {
-        list: [],
-      },
-    };
-    const pagingData = {
-      page: {
-        listLength: '',
-      },
-    };
-
     service.getMachineData()
-      .then(json =>
-        json.map((item) => {
-          const itemId = item.id.toString().padStart(3, '0');
-          const itemTemperature = item.temperature + temperatureUnit.c;
-          const itemStatus = status[item.status];
-          const itemLowercaseStatus = itemStatus.toLowerCase();
-          const itemIsDisabled = item.disable;
-          if (itemIsDisabled) {
-            disableIds.push(itemId);
-          }
-
-          const machineList = {
-            id: itemId,
-            model: item.model,
-            status: itemStatus,
-            temperature: itemTemperature,
-            address: item.address,
-            region: item.region,
-            lowercaseStatus: itemLowercaseStatus,
-            isDisabled: itemIsDisabled,
-          };
-          return machineList;
-        }))
+      .then(json => processMachineData(json))
       .then((list) => {
-        machineData.page.list = list;
-        const tableTemplate = $('#table-tpl').html();
-        $('#table-entry').html(Mustache.render(tableTemplate, machineData));
-        pagingData.page.listLength = list.length;
-        const pagingTemplate = $('#paging-tpl').html();
-        $('#paging-entry').html(Mustache.render(pagingTemplate, pagingData));
-      })
-      .then(() => {
-        bindUI();
-      })
-      .catch((error) => {
-        console.log(error);
+        initPagination(list);
+        renderPagingData(list);
       });
   };
 
   const reloadTable = (data) => {
+    const list = processMachineData(data);
+    initPagination(list);
+    renderPagingData(list);
+    bindUI();
+  };
+
+  const reloadTableByPage = (list, page, limit) => {
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    const ary = list.slice(start, end);
+
+    renderTableData(ary);
+    bindUI();
+  };
+
+  const rederMenuData = ((list) => {
+    const menuData = {
+      page: {
+        list: [],
+      },
+    };
+    menuData.page.list = list;
+    const template = $('#menu-list-tpl').html();
+    $('#menu-list-entry').html(Mustache.render(template, menuData));
+  });
+
+  const renderTableData = ((list) => {
     const machineData = {
       page: {
         list: [],
       },
     };
+    machineData.page.list = list;
+    const tableTemplate = $('#table-tpl').html();
+    $('#table-entry').html(Mustache.render(tableTemplate, machineData));
+  });
+
+  const renderPagingData = ((list) => {
     const pagingData = {
       page: {
         listLength: '',
       },
     };
 
-    machineData.page.list = data.map((item) => {
-      const itemId = item.id.toString().padStart(3, '0');
-      const itemTemperature = item.temperature + temperatureUnit.c;
-      const itemStatus = status[item.status];
-      const itemLowercaseStatus = itemStatus.toLowerCase();
-      const itemIsDisabled = item.disable;
-      if (itemIsDisabled) {
-        disableIds.push(itemId);
-      }
-
-      const list = {
-        id: itemId,
-        model: item.model,
-        status: itemStatus,
-        temperature: itemTemperature,
-        address: item.address,
-        region: item.region,
-        lowercaseStatus: itemLowercaseStatus,
-        isDisabled: itemIsDisabled,
-      };
-      return list;
-    });
-    const tableTemplate = $('#table-tpl').html();
-    $('#table-entry').html(Mustache.render(tableTemplate, machineData));
-    pagingData.page.listLength = machineData.page.list.length;
+    pagingData.page.listLength = list.length;
     const pagingTemplate = $('#paging-tpl').html();
     $('#paging-entry').html(Mustache.render(pagingTemplate, pagingData));
-  };
+  });
 
+  const processMachineData = data => data.map((item) => {
+    const itemId = item.id.toString().padStart(3, '0');
+    const itemTemperature = item.temperature + temperatureUnit.c;
+    const itemStatus = status[item.status];
+    const itemLowercaseStatus = itemStatus.toLowerCase();
+    const itemIsDisabled = item.disable;
+    if (itemIsDisabled) {
+      disableIds.push(itemId);
+    }
+
+    const list = {
+      id: itemId,
+      model: item.model,
+      status: itemStatus,
+      temperature: itemTemperature,
+      address: item.address,
+      region: item.region,
+      lowercaseStatus: itemLowercaseStatus,
+      isDisabled: itemIsDisabled,
+    };
+    return list;
+  });
+
+  const initPagination = (list) => {
+    if ($('#pagination-demo2').data('twbs-pagination')) {
+      $('#pagination-demo2').twbsPagination('destroy');
+    }
+    $('#pagination-demo2').twbsPagination({
+      totalPages: Math.ceil(list.length / 5),
+      visiblePages: list.length > 5 ? 5 : list.length,
+      first: '<i class="fa fa-angle-double-left"></i>',
+      prev: '<i class="fa fa-angle-left"></i>',
+      next: '<i class="fa fa-angle-right"></i>',
+      last: '<i class="fa fa-angle-double-right"></i>',
+      onPageClick: (event, page) => {
+        reloadTableByPage(list, page, 5);
+      },
+    });
+  };
 
   initTable();
   initMenu();
