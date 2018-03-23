@@ -1,0 +1,22 @@
+<script id="menu-list-tpl" type="text/template">
+  {{#page}}
+  <div class="menu-list">
+    <ol>
+      {{#list}}
+      <li class="panel">
+        <a class="menu-item panel-heading">
+          <i class="{{menuIcon}} menu-item-font" data-menu-id={{menuId}}></i>{{menuName}}
+        </a>
+        <div class="panel-collapse collapse in">
+          {{#submenu}}
+          <a class="menu-sub-item" href="#{{subMenuHref}}" data-submenu-id={{subMenuId}}>
+            <p>{{subMenuName}}</p>
+          </a>
+          {{/submenu}}
+        </div>
+      </li>
+      {{/list}}
+    </ol>
+  </div>
+  {{/page}}
+</script>
