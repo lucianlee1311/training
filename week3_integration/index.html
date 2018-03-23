@@ -9,6 +9,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
     <script type="text/javascript" src="./js/jquery.twbsPagination.js"></script>
+    <script type="text/javascript" src="./js/menu.js"></script>
+    <script type="text/javascript" src="./js/table.js"></script>
     <script type="text/javascript" src="./js/index.js"></script>
     <title>Machine</title>
 </head>
@@ -129,6 +131,7 @@
             </tr>
           </thead>
           <tbody>
+            {{#loaded}}
             {{#list}}
             <tr data-machine-id="{{id}}">
               <th scope="row"><div class="id-box-{{lowercaseStatus}}">{{id}}</div></th>
@@ -161,6 +164,12 @@
               </td>
             </tr>
             {{/list}}
+            {{/loaded}}
+            {{^loaded}}
+            <tr>
+              <td colspan="8" class="align-center">no data.</td>
+            </tr>
+            {{/loaded}}
           </tbody>
         </table>
       </div>

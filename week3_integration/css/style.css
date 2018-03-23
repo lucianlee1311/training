@@ -353,6 +353,7 @@ body {
   background-color: #E8E8E8;
   box-sizing: border-box;
   padding: 0 20px;
+  height: 100%;
 }
 
 .content .content-table thead {
