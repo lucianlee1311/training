@@ -1,4 +1,4 @@
-$(document).ready(() => {
+const menuFunc = ($) => {
   const service = {
     getMenuData: () => new Promise((resolve, reject) => {
       fetch('https://lucianjson.herokuapp.com/menu', {
@@ -6,33 +6,43 @@ $(document).ready(() => {
         headers: { 'Content-Type': 'application/json' },
       })
         .then(res => res.json())
-        .then((json) => {
-          const newJson = Object.assign([], json);
-          resolve(newJson);
-        })
-        .catch((error) => {
-          reject(error);
-        });
+        .then(resolve)
+        .catch(reject);
+    }),
+
+    getMenuTemplate: () => new Promise((resolve, reject) => {
+      fetch('./templateHtml/menuTemplate.html', {
+        method: 'GET',
+      })
+        .then(res => res.text())
+        .then(resolve)
+        .catch(reject);
     }),
   };
 
-  const rederMenuData = ((list) => {
-    const menuData = {
-      page: {
-        list: [],
-      },
-    };
-    menuData.page.list = list;
-    const template = $('#menu-list-tpl').html();
-    $('#menu-list-entry').html(Mustache.render(template, menuData));
-  });
+  const utils = {
+    processMenuData: (list) => {
+      const menuData = { page: { list } };
+      return menuData;
+    },
 
-  const bindUI = () => {
-    const $panels = $('.panel');
-    const $menuItem = $('.menu-item');
-    const $menuSubItem = $('.menu-sub-item');
+    renderMenuData: (([template, data]) => {
+      const menuData = utils.processMenuData(data);
+      const templateHtml = $(template).html();
+      $('#menu-list-entry').html(Mustache.render(templateHtml, menuData));
+    }),
 
-    $panels.click((e) => {
+    bindUI: (() => {
+      const $panels = $('.panel');
+      const $menuItem = $('.menu-item');
+      const $menuSubItem = $('.menu-sub-item');
+
+      utils.clickMenu($panels, $menuItem, $menuSubItem);
+      utils.clickSubMenu($panels, $menuItem, $menuSubItem);
+      utils.hoverMenu();
+    }),
+
+    clickMenu: ($panels, $menuItem, $menuSubItem) => $panels.click((e) => {
       e.stopPropagation();
 
       const $self = $(e.currentTarget);
@@ -46,9 +56,9 @@ $(document).ready(() => {
 
       $menuSubItem.removeClass('active');
       $self.children('.panel-collapse').children('.menu-sub-item:nth-child(1)').addClass('active');
-    });
+    }),
 
-    $menuSubItem.click((e) => {
+    clickSubMenu: ($panels, $menuItem, $menuSubItem) => $menuSubItem.click((e) => {
       e.stopPropagation();
 
       const $self = $(e.currentTarget);
@@ -65,9 +75,9 @@ $(document).ready(() => {
 
       $menuSubItem.removeClass('active');
       $self.addClass('active');
-    });
+    }),
 
-    $('.panel, .panel-collapse').hover((e) => {
+    hoverMenu: () => $('.panel, .panel-collapse').hover((e) => {
       const self = e.currentTarget;
       if ($('> .panel-collapse', self).length > 0) {
         $('> .panel-collapse', self).stop().slideDown();
@@ -78,18 +88,9 @@ $(document).ready(() => {
       if ($('> .panel-collapse', self).length > 0 && !$hasActiveClass) {
         $('> .panel-collapse', self).stop().slideUp();
       }
-    });
+    }),
+
   };
 
-  const initMenu = () => {
-    service.getMenuData()
-      .then((json) => {
-        rederMenuData(json);
-      })
-      .then(() => {
-        bindUI();
-      });
-  };
-
-  initMenu();
-});
+  return { service, utils };
+};

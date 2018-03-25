@@ -21,31 +21,9 @@
       <div class="menu-title">
         IVM LOGO
       </div>
-
+      <!-- menu-list start -->
       <div id="menu-list-entry"></div>
-      <script id="menu-list-tpl" type="text/template">
-      {{#page}}
-      <div class="menu-list">
-        <ol>
-          {{#list}}
-          <li class="panel">
-            <a class="menu-item panel-heading">
-              <i class="{{menuIcon}} menu-item-font" data-menu-id={{menuId}}></i>{{menuName}}
-            </a>
-            <div class="panel-collapse collapse in">
-              {{#submenu}}
-              <a class="menu-sub-item" href="#{{subMenuHref}}" data-submenu-id={{subMenuId}}>
-                <p>{{subMenuName}}</p>
-              </a>
-              {{/submenu}}
-            </div>
-          </li>
-          {{/list}}
-        </ol>
-      </div>
-      {{/page}}
-      </script>
-
+      <!-- menu-list start -->
     </div>
     <!-- menu end -->
 
@@ -114,81 +92,13 @@
 
       <!-- content-table start -->
       <div id="table-entry"></div>
-      <script id="table-tpl" type="text/template">
-      {{#page}}
-        <div class="content-table">
-        <table class="table table-hover table-striped">
-          <thead>
-            <tr>
-              <th scope="col">Device ID</th>
-              <th scope="col">Model</th>
-              <th scope="col">Status</th>
-              <th scope="col">Machine Temp</th>
-              <th scope="col" style="width:32%">Address</th>
-              <th scope="col" style="width:8%">Region</th>
-              <th scope="col">Details</th>
-              <th scope="col" style="width:14%">Setup</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#loaded}}
-            {{#list}}
-            <tr data-machine-id="{{id}}">
-              <th scope="row"><div class="id-box-{{lowercaseStatus}}">{{id}}</div></th>
-              <td class="model-text align-center">{{model}}</td>
-              <td class="status-text align-center"><div class="status-box {{lowercaseStatus}}">{{status}}</div></td>
-              <td class="temperature-text align-center">{{temperature}}</td>
-              <td class="address-text">{{address}}</td>
-              <td class="address-edit hidden"><input type="text" name="inputAddress" class="input-address" value="{{address}}"></td>
-              <td class="region-text align-center">{{region}}</td>
-              <td class="region-edit align-center hidden"><input type="text" name="inputRegion" class="input-region" value="{{region}}"></td>
-              <td class="action-detail">
-                <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
-                  <i class="row-example"></i>
-                  <i class="fa fa-list-alt fa-lg row-detail" data-toggle="modal" data-target="#machineDetailModal"></i>
-                </div>
-              </td>
-              <td class="action-setup">
-                <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
-                  <i class="fa fa-pencil-square-o fa-lg row-edit"></i>
-                  <i class="fa fa-trash-o fa-lg row-remove" data-toggle="modal" data-target="#removeMachineModal"></i>
-                  <i class="row-example"></i>
-                </div>
-              </td>
-              <td class="action-edit hidden">
-                <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
-                  <i class="row-example"></i>
-                  <i class="fa fa-close fa-lg row-close"></i>
-                  <i class="fa fa-check fa-lg row-check"></i>
-                </div>
-              </td>
-            </tr>
-            {{/list}}
-            {{/loaded}}
-            {{^loaded}}
-            <tr>
-              <td colspan="8" class="align-center">no data.</td>
-            </tr>
-            {{/loaded}}
-          </tbody>
-        </table>
-      </div>
-      {{/page}}
-      </script>
       <!-- content-table end -->
 
       <!-- content-paging start -->
       <div class="content-paging">
-
+        <!-- paging number start -->
         <div id="paging-entry"></div>
-        <script id="paging-tpl" type="text/template">
-        {{#page}}
-          <div class="paging-infomation">
-            <div>{{listLength}} Models</div>
-          </div>
-        {{/page}}
-        </script>
-
+        <!-- paging number end -->
         <nav aria-label="pagination">
           <ul class="pagination" id="pagination-demo2">
             <li class="page-item disabled"><a class="page-link"><i class="fa fa-angle-double-left"></i></a></li>

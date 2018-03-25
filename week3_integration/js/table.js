@@ -1,4 +1,7 @@
-$(document).ready(() => {
+const tableFunc = ($) => {
+  const disableIds = [];
+  let originalMachineData = null;
+
   const status = {
     0: 'Online',
     1: 'Offline',
@@ -10,9 +13,6 @@ $(document).ready(() => {
     f: `${String.fromCharCode(176)}F`,
   };
 
-  const disableIds = [];
-  let originalMachineData = null;
-
   const service = {
     getMachineData: () => new Promise((resolve, reject) => {
       fetch('https://lucianjson.herokuapp.com/machine', {
@@ -22,21 +22,6 @@ $(document).ready(() => {
         .then(res => res.json())
         .then((json) => {
           originalMachineData = JSON.parse(JSON.stringify(json));
-          const newJson = Object.assign([], json);
-          resolve(newJson);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    }),
-
-    getMachineDataByPage: (page, limit) => new Promise((resolve, reject) => {
-      fetch(`https://lucianjson.herokuapp.com/machine?_page=${page}&_limit=${limit}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      })
-        .then(res => res.json())
-        .then((json) => {
           const newJson = Object.assign([], json);
           resolve(newJson);
         })
@@ -88,317 +73,347 @@ $(document).ready(() => {
           reject(error);
         });
     }),
+
+    getTableTemplate: () => new Promise((resolve, reject) => {
+      fetch('/templateHtml/tableTemplate.html', {
+        method: 'GET',
+      })
+        .then(res => res.text())
+        .then(resolve)
+        .catch(reject);
+    }),
+
+    getPagingInformationTemplate: () => new Promise((resolve, reject) => {
+      fetch('/templateHtml/pagingInformationTemplate.html', {
+        method: 'GET',
+      })
+        .then(res => res.text())
+        .then(resolve)
+        .catch(reject);
+    }),
   };
 
-  const renderTableData = ((list) => {
-    const machineData = {
-      page: {
-        loaded: true,
-        list: [],
-      },
-    };
-    if (list.length <= 0) {
-      machineData.page.loaded = false;
-    } else {
-      machineData.page.list = list;
-    }
-    const tableTemplate = $('#table-tpl').html();
-    $('#table-entry').html(Mustache.render(tableTemplate, machineData));
-  });
+  const utils = {
+    processMachineData: (data) => {
+      const newData = data.map((item) => {
+        const itemId = item.id.toString().padStart(3, '0');
+        const itemTemperature = item.temperature + temperatureUnit.c;
+        const itemStatus = status[item.status];
+        const itemLowercaseStatus = itemStatus.toLowerCase();
+        const itemIsDisabled = item.disable;
+        if (itemIsDisabled) {
+          disableIds.push(itemId);
+        }
 
-  const renderPagingData = ((list) => {
-    const pagingData = {
-      page: {
-        listLength: '',
-      },
-    };
+        const list = {
+          id: itemId,
+          model: item.model,
+          status: itemStatus,
+          temperature: itemTemperature,
+          address: item.address,
+          region: item.region,
+          lowercaseStatus: itemLowercaseStatus,
+          isDisabled: itemIsDisabled,
+        };
+        return list;
+      });
 
-    pagingData.page.listLength = list.length;
-    const pagingTemplate = $('#paging-tpl').html();
-    $('#paging-entry').html(Mustache.render(pagingTemplate, pagingData));
-  });
+      const machineData = {
+        page: {
+          loaded: true,
+          list: newData,
+        },
+      };
+      if (newData.length <= 0) {
+        machineData.page.loaded = false;
+      } else {
+        machineData.page.list = newData;
+      }
 
-  const processMachineData = data => data.map((item) => {
-    const itemId = item.id.toString().padStart(3, '0');
-    const itemTemperature = item.temperature + temperatureUnit.c;
-    const itemStatus = status[item.status];
-    const itemLowercaseStatus = itemStatus.toLowerCase();
-    const itemIsDisabled = item.disable;
-    if (itemIsDisabled) {
-      disableIds.push(itemId);
-    }
+      return machineData;
+    },
 
-    const list = {
-      id: itemId,
-      model: item.model,
-      status: itemStatus,
-      temperature: itemTemperature,
-      address: item.address,
-      region: item.region,
-      lowercaseStatus: itemLowercaseStatus,
-      isDisabled: itemIsDisabled,
-    };
-    return list;
-  });
+    switchAdvancedSearch: () => {
+      const openAdvancedSearch = $('.open-advanced-search');
+      const advancedSearch = $('.advanced-search');
 
-  const switchAdvancedSearch = () => {
-    const openAdvancedSearch = $('.open-advanced-search');
-    const advancedSearch = $('.advanced-search');
+      if (advancedSearch.hasClass('hidden')) {
+        openAdvancedSearch.children('i').addClass('dark');
+        advancedSearch.removeClass('hidden');
+      } else {
+        openAdvancedSearch.children('i').removeClass('dark');
+        advancedSearch.addClass('hidden');
+      }
+    },
 
-    if (advancedSearch.hasClass('hidden')) {
-      openAdvancedSearch.children('i').addClass('dark');
-      advancedSearch.removeClass('hidden');
-    } else {
-      openAdvancedSearch.children('i').removeClass('dark');
-      advancedSearch.addClass('hidden');
-    }
-  };
-
-  const bindUI = () => {
-    $('.open-advanced-search').click((e) => {
-      e.stopImmediatePropagation();
-
-      switchAdvancedSearch();
-    });
-
-    $('.row-edit').click((e) => {
-      if ($(e.currentTarget).parent().hasClass('disabled')) {
+    initPagination: (tableTemplate, list) => {
+      if ($('#pagination-demo2').data('twbs-pagination')) {
+        $('#pagination-demo2').twbsPagination('destroy');
+      }
+      if (list.length <= 0) {
         return;
       }
+      $('#pagination-demo2').twbsPagination({
+        totalPages: Math.ceil(list.length / 5),
+        visiblePages: list.length > 5 ? 5 : list.length,
+        first: '<i class="fa fa-angle-double-left"></i>',
+        prev: '<i class="fa fa-angle-left"></i>',
+        next: '<i class="fa fa-angle-right"></i>',
+        last: '<i class="fa fa-angle-double-right"></i>',
+        onPageClick: (event, page) => {
+          const start = (page - 1) * 5;
+          const end = start + 5;
+          const pagingTableData = list.slice(start, end);
 
-      const $trEl = $(e.currentTarget).closest('.action-setup').parent();
-      const id = $trEl.data('machine-id');
-
-      $trEl.children('.address-text').addClass('hidden');
-      $trEl.children('.address-edit').removeClass('hidden');
-      $trEl.children('.region-text').addClass('hidden');
-      $trEl.children('.region-edit').removeClass('hidden');
-      $trEl.children('.action-detail').children('.action-box').addClass('hidden');
-      $trEl.children('.action-setup').addClass('hidden');
-      $trEl.children('.action-edit').removeClass('hidden');
-
-      $('tbody').find('tr').each((index, element) => {
-        const $node = $(element);
-        const thisId = $node.data('machine-id');
-        if (thisId !== id) {
-          $node.children().children('.action-box').addClass('disabled');
-        }
+          const processedData = utils.processMachineData(pagingTableData);
+          utils.renderTableData(tableTemplate, processedData);
+          utils.bindUI();
+        },
       });
-    });
+    },
 
-    $('.row-close').click((e) => {
-      e.stopImmediatePropagation();
-
-      const $trEl = $(e.currentTarget).closest('.action-edit').parent();
-
-      $trEl.children('.address-text').removeClass('hidden');
-      $trEl.children('.address-edit').addClass('hidden');
-      $trEl.children('.region-text').removeClass('hidden');
-      $trEl.children('.region-edit').addClass('hidden');
-      $trEl.children('.action-detail').children('.action-box').removeClass('hidden');
-      $trEl.children('.action-setup').removeClass('hidden');
-      $trEl.children('.action-edit').addClass('hidden');
-
-      $('tbody').find('tr').each((index, element) => {
-        const $node = $(element);
-        const thisId = $node.data('machine-id');
-        if (disableIds.join().indexOf(thisId) < 0) {
-          $node.children().children('.action-box').removeClass('disabled');
-        }
-      });
-    });
-
-    $('.row-check').click((e) => {
-      e.stopImmediatePropagation();
-
-      const $trEl = $(e.currentTarget).closest('.action-edit').parent();
-      const id = $trEl.data('machine-id');
-
-      $trEl.children('.address-text').removeClass('hidden');
-      $trEl.children('.address-edit').addClass('hidden');
-      $trEl.children('.region-text').removeClass('hidden');
-      $trEl.children('.region-edit').addClass('hidden');
-      $trEl.children('.action-detail').children('.action-box').removeClass('hidden');
-      $trEl.children('.action-setup').removeClass('hidden');
-      $trEl.children('.action-edit').addClass('hidden');
-
-      $('tbody').find('tr').each((index, element) => {
-        const $node = $(element);
-        const thisId = $node.data('machine-id');
-        if (disableIds.join().indexOf(thisId) < 0) {
-          $node.children().children('.action-box').removeClass('disabled');
-        }
-      });
-
-      const newAddress = $trEl.children().children('input[name=inputAddress]').val();
-      const newRegion = $trEl.children().children('input[name=inputRegion]').val();
-      const findRowData = originalMachineData.find(item => item.id === parseInt(id, 10));
-      findRowData.address = newAddress;
-      findRowData.region = newRegion;
-
-      service.updateMachineData(JSON.stringify(findRowData), parseInt(id, 10))
+    initTable: () => {
+      Promise.all([service.getTableTemplate(), service.getPagingInformationTemplate(), service.getMachineData()])
+        .then(([tableTemplate, pagingInformationTemplate, data]) => {
+          utils.initPagination(tableTemplate, data);
+          utils.renderPagingData(pagingInformationTemplate, data);
+        })
         .then(() => {
-          initTable();
+          utils.bindUI();
         })
         .catch((error) => {
           console.log(error);
         });
-    });
+    },
 
-    $('.row-detail').click((e) => {
-      const $trEl = $(e.currentTarget).closest('.action-detail').parent();
-      const id = $trEl.data('machine-id');
-      const model = $trEl.children('.model-text').text();
-      const statusText = $trEl.children('.status-text').text();
-      const temperature = $trEl.children('.temperature-text').text();
-      const address = $trEl.children('.address-text').text();
-      const region = $trEl.children('.region-text').text();
-
-      $('input[name=editDeviceId]').val(id);
-      $('input[name=editModel]').val(model);
-      $('input[name=editStatus]').val(statusText);
-      $('input[name=editTemperature]').val(temperature);
-      $('input[name=editAddress]').val(address);
-      $('input[name=editRegion]').val(region);
-    });
-
-    $('.remove-machine-button').click((e) => {
-      e.stopImmediatePropagation();
-      $('#removeMachineModal').modal('hide');
-
-      const $trEl = $(e.currentTarget);
-      const removeId = $trEl.data('machine-id');
-
-      service.removeMachineData(parseInt(removeId, 10))
+    reloadTable: (data) => {
+      Promise.all([service.getTableTemplate(), service.getPagingInformationTemplate()])
+        .then(([tableTemplate, pagingInformationTemplate]) => {
+          if (data.length <= 0) {
+            utils.initPagination(tableTemplate, data);
+            utils.renderTableData(tableTemplate, data);
+            utils.renderPagingData(pagingInformationTemplate, data);
+          } else {
+            utils.initPagination(tableTemplate, data);
+            utils.renderPagingData(pagingInformationTemplate, data);
+          }
+        })
         .then(() => {
-          initTable();
+          utils.bindUI();
         })
         .catch((error) => {
           console.log(error);
         });
-    });
+    },
 
-    $('.row-remove').click((e) => {
-      const $trEl = $(e.currentTarget).closest('.action-setup').parent();
-      const machineId = $trEl.data('machine-id');
+    renderTableData: ((template, machineData) => {
+      const machineTemplateHtml = $(template).html();
+      $('#table-entry').html(Mustache.render(machineTemplateHtml, machineData));
+    }),
 
-      $('#remove-machine-button').attr('data-machine-id', machineId);
-    });
+    renderPagingData: ((template, list) => {
+      const listLength = list.length;
+      const pagingData = { page: { listLength } };
+      const pagingTemplateHtml = $(template).html();
+      $('#paging-entry').html(Mustache.render(pagingTemplateHtml, pagingData));
+    }),
 
-    $('.add-machine-button').click((e) => {
-      e.stopImmediatePropagation();
+    bindUI: () => {
+      $('.open-advanced-search').click((e) => {
+        e.stopImmediatePropagation();
 
-      $('#addMachineModal').modal('hide');
+        utils.switchAdvancedSearch();
+      });
 
-      const addModel = $('input[name=addModel]').val();
-      const addStatus = $('select[name=addStatus]').val();
-      const addTemperature = $('input[name=addTemperature]').val();
-      const addAddress = $('input[name=addAddress]').val();
-      const addRegion = $('input[name=addRegion]').val();
-
-      const newMachineData = {
-        model: addModel,
-        status: addStatus,
-        temperature: addTemperature,
-        address: addAddress,
-        region: addRegion,
-        disable: false,
-      };
-
-      service.addMachineData(JSON.stringify(newMachineData))
-        .then(() => {
-          initTable();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
-
-    $('.search-button').click((e) => {
-      e.stopImmediatePropagation();
-
-      const searchKeyword = $('input[name=searchKeyword]').val();
-      if (searchKeyword !== '') {
-        const result = originalMachineData.filter(item => item.model.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || item.address.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1);
-        reloadTable(result);
-      } else {
-        reloadTable(originalMachineData);
-      }
-    });
-
-    $('.advanced-search-button').click((e) => {
-      e.stopImmediatePropagation();
-
-      const advancedKeyword = $('input[name=advancedKeyword]').val();
-      const searchStatus = $('select[name=advancedStatus]').val();
-      const result = originalMachineData.filter((item) => {
-        if (advancedKeyword !== '') {
-          return ((item.model.indexOf(advancedKeyword) > -1 || item.address.indexOf(advancedKeyword) > -1) && (item.status.toString() === searchStatus));
+      $('.row-edit').click((e) => {
+        if ($(e.currentTarget).parent().hasClass('disabled')) {
+          return;
         }
-        return (item.status.toString() === searchStatus);
+
+        const $trEl = $(e.currentTarget).closest('.action-setup').parent();
+        const id = $trEl.data('machine-id');
+
+        $trEl.children('.address-text').addClass('hidden');
+        $trEl.children('.address-edit').removeClass('hidden');
+        $trEl.children('.region-text').addClass('hidden');
+        $trEl.children('.region-edit').removeClass('hidden');
+        $trEl.children('.action-detail').children('.action-box').addClass('hidden');
+        $trEl.children('.action-setup').addClass('hidden');
+        $trEl.children('.action-edit').removeClass('hidden');
+
+        $('tbody').find('tr').each((index, element) => {
+          const $node = $(element);
+          const thisId = $node.data('machine-id');
+          if (thisId !== id) {
+            $node.children().children('.action-box').addClass('disabled');
+          }
+        });
       });
-      reloadTable(result);
 
-      switchAdvancedSearch();
-    });
+      $('.row-close').click((e) => {
+        e.stopImmediatePropagation();
 
-    $('.advanced-close-button').click((e) => {
-      e.stopImmediatePropagation();
+        const $trEl = $(e.currentTarget).closest('.action-edit').parent();
 
-      switchAdvancedSearch();
-    });
-  };
+        $trEl.children('.address-text').removeClass('hidden');
+        $trEl.children('.address-edit').addClass('hidden');
+        $trEl.children('.region-text').removeClass('hidden');
+        $trEl.children('.region-edit').addClass('hidden');
+        $trEl.children('.action-detail').children('.action-box').removeClass('hidden');
+        $trEl.children('.action-setup').removeClass('hidden');
+        $trEl.children('.action-edit').addClass('hidden');
 
-  const reloadTableByPage = (list, page, limit) => {
-    const start = (page - 1) * limit;
-    const end = start + limit;
-    const ary = list.slice(start, end);
-
-    renderTableData(ary);
-    bindUI();
-  };
-
-  const initPagination = (list) => {
-    if ($('#pagination-demo2').data('twbs-pagination')) {
-      $('#pagination-demo2').twbsPagination('destroy');
-    }
-    if (list.length <= 0) {
-      return;
-    }
-    $('#pagination-demo2').twbsPagination({
-      totalPages: Math.ceil(list.length / 5),
-      visiblePages: list.length > 5 ? 5 : list.length,
-      first: '<i class="fa fa-angle-double-left"></i>',
-      prev: '<i class="fa fa-angle-left"></i>',
-      next: '<i class="fa fa-angle-right"></i>',
-      last: '<i class="fa fa-angle-double-right"></i>',
-      onPageClick: (event, page) => {
-        reloadTableByPage(list, page, 5);
-      },
-    });
-  };
-
-  const reloadTable = (data) => {
-    if (data.length <= 0) {
-      initPagination(data);
-      renderTableData(data);
-      renderPagingData(data);
-      return;
-    }
-    const list = processMachineData(data);
-    initPagination(list);
-    renderPagingData(list);
-    bindUI();
-  };
-
-  const initTable = () => {
-    service.getMachineData()
-      .then(json => processMachineData(json))
-      .then((list) => {
-        initPagination(list);
-        renderPagingData(list);
+        $('tbody').find('tr').each((index, element) => {
+          const $node = $(element);
+          const thisId = $node.data('machine-id');
+          if (disableIds.join().indexOf(thisId) < 0) {
+            $node.children().children('.action-box').removeClass('disabled');
+          }
+        });
       });
+
+      $('.row-check').click((e) => {
+        e.stopImmediatePropagation();
+
+        const $trEl = $(e.currentTarget).closest('.action-edit').parent();
+        const id = $trEl.data('machine-id');
+
+        $trEl.children('.address-text').removeClass('hidden');
+        $trEl.children('.address-edit').addClass('hidden');
+        $trEl.children('.region-text').removeClass('hidden');
+        $trEl.children('.region-edit').addClass('hidden');
+        $trEl.children('.action-detail').children('.action-box').removeClass('hidden');
+        $trEl.children('.action-setup').removeClass('hidden');
+        $trEl.children('.action-edit').addClass('hidden');
+
+        $('tbody').find('tr').each((index, element) => {
+          const $node = $(element);
+          const thisId = $node.data('machine-id');
+          if (disableIds.join().indexOf(thisId) < 0) {
+            $node.children().children('.action-box').removeClass('disabled');
+          }
+        });
+
+        const newAddress = $trEl.children().children('input[name=inputAddress]').val();
+        const newRegion = $trEl.children().children('input[name=inputRegion]').val();
+        const findRowData = originalMachineData.find(item => item.id === parseInt(id, 10));
+        findRowData.address = newAddress;
+        findRowData.region = newRegion;
+
+        service.updateMachineData(JSON.stringify(findRowData), parseInt(id, 10))
+          .then(() => {
+            utils.initTable();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+
+      $('.row-detail').click((e) => {
+        const $trEl = $(e.currentTarget).closest('.action-detail').parent();
+        const id = $trEl.data('machine-id');
+        const model = $trEl.children('.model-text').text();
+        const statusText = $trEl.children('.status-text').text();
+        const temperature = $trEl.children('.temperature-text').text();
+        const address = $trEl.children('.address-text').text();
+        const region = $trEl.children('.region-text').text();
+
+        $('input[name=editDeviceId]').val(id);
+        $('input[name=editModel]').val(model);
+        $('input[name=editStatus]').val(statusText);
+        $('input[name=editTemperature]').val(temperature);
+        $('input[name=editAddress]').val(address);
+        $('input[name=editRegion]').val(region);
+      });
+
+      $('.remove-machine-button').click((e) => {
+        e.stopImmediatePropagation();
+        $('#removeMachineModal').modal('hide');
+
+        const $trEl = $(e.currentTarget);
+        const removeId = $trEl.data('machine-id');
+
+        service.removeMachineData(parseInt(removeId, 10))
+          .then(() => {
+            utils.initTable();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+
+      $('.row-remove').click((e) => {
+        const $trEl = $(e.currentTarget).closest('.action-setup').parent();
+        const machineId = $trEl.data('machine-id');
+
+        $('#remove-machine-button').attr('data-machine-id', machineId);
+      });
+
+      $('.add-machine-button').click((e) => {
+        e.stopImmediatePropagation();
+
+        $('#addMachineModal').modal('hide');
+
+        const addModel = $('input[name=addModel]').val();
+        const addStatus = $('select[name=addStatus]').val();
+        const addTemperature = $('input[name=addTemperature]').val();
+        const addAddress = $('input[name=addAddress]').val();
+        const addRegion = $('input[name=addRegion]').val();
+
+        const newMachineData = {
+          model: addModel,
+          status: addStatus,
+          temperature: addTemperature,
+          address: addAddress,
+          region: addRegion,
+          disable: false,
+        };
+
+        service.addMachineData(JSON.stringify(newMachineData))
+          .then(() => {
+            utils.initTable();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+
+      $('.search-button').click((e) => {
+        e.stopImmediatePropagation();
+
+        const searchKeyword = $('input[name=searchKeyword]').val();
+        if (searchKeyword !== '') {
+          const result = originalMachineData.filter(item => item.model.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || item.address.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1);
+          utils.reloadTable(result);
+        } else {
+          utils.reloadTable(originalMachineData);
+        }
+      });
+
+      $('.advanced-search-button').click((e) => {
+        e.stopImmediatePropagation();
+
+        const advancedKeyword = $('input[name=advancedKeyword]').val();
+        const searchStatus = $('select[name=advancedStatus]').val();
+        const result = originalMachineData.filter((item) => {
+          if (advancedKeyword !== '') {
+            return ((item.model.indexOf(advancedKeyword) > -1 || item.address.indexOf(advancedKeyword) > -1) && (item.status.toString() === searchStatus));
+          }
+          return (item.status.toString() === searchStatus);
+        });
+        utils.reloadTable(result);
+
+        utils.switchAdvancedSearch();
+      });
+
+      $('.advanced-close-button').click((e) => {
+        e.stopImmediatePropagation();
+
+        utils.switchAdvancedSearch();
+      });
+    },
+
   };
 
-  initTable();
-});
+  return { service, utils };
+};
