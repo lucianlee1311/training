@@ -1,20 +1,34 @@
 {
-  "name": "integration2",
+  "name": "week3_integration",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "eslint": "^4.19.0",
-    "node-fetch": "^2.1.1"
+    "bootstrap": "^4.0.0",
+    "eslint": "^4.19.1",
+    "jest": "^22.4.3",
+    "jquery": "^3.3.1",
+    "mustache": "^2.3.0",
+    "node-fetch": "^2.1.1",
+    "popper.js": "^1.14.1",
+    "twbs-pagination": "^1.4.1"
   },
   "devDependencies": {
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.9.0"
+  },
+  "jest": {
+    "setupFiles": [
+      "./test/test-env.js"
+    ]
   }
 }

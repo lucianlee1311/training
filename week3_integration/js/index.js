@@ -1,6 +1,6 @@
 $(document).ready(() => {
-  const menuApp = menuFunc($);
-  const tableApp = tableFunc($);
+  const menuApp = menuFunc($, Mustache);
+  const tableApp = tableFunc($, Mustache);
 
   Promise.all([menuApp.service.getMenuTemplate(), menuApp.service.getMenuData()])
     .then((values) => {

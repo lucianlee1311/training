@@ -1,4 +1,4 @@
-const menuFunc = ($) => {
+const menuFunc = ($, Mustache) => {
   const service = {
     getMenuData: () => new Promise((resolve, reject) => {
       fetch('https://lucianjson.herokuapp.com/menu', {
@@ -78,19 +78,38 @@ const menuFunc = ($) => {
     }),
 
     hoverMenu: () => $('.panel, .panel-collapse').hover((e) => {
+      console.log('AAAAAAA');
       const self = e.currentTarget;
       if ($('> .panel-collapse', self).length > 0) {
         $('> .panel-collapse', self).stop().slideDown();
       }
+
+      let visible = $('> .panel-collapse', self).is(':visible');
+      // let visible = $('> .panel-collapse', self).is(':hidden');
+      // let visible = ($('> .panel-collapse', self).css('display') === 'none');
+      console.log('visible1:', visible);
+      // let length = $('> .panel-collapse', self).length;
+      // console.log('visible1:', length);
     }, (e) => {
       const self = e.currentTarget;
       const $hasActiveClass = $(self).children('.menu-item').hasClass('active');
       if ($('> .panel-collapse', self).length > 0 && !$hasActiveClass) {
         $('> .panel-collapse', self).stop().slideUp();
       }
+
+      let visible = $('> .panel-collapse', self).is(':visible');
+      // let visible = $('> .panel-collapse', self).is(':hidden');
+      // let visible = ($('> .panel-collapse', self).css('display') === 'none');
+      console.log('visible2:', visible);
+      // let length = $('> .panel-collapse', self).length;
+      // console.log('visible2:', length);
     }),
 
   };
 
   return { service, utils };
 };
+
+if (typeof module !== 'undefined' && typeof require !== 'undefined') {
+  module.exports = menuFunc;
+}

@@ -1,13 +1,11 @@
-const tableFunc = ($) => {
+const tableFunc = ($, Mustache) => {
   const disableIds = [];
   let originalMachineData = null;
-
   const status = {
     0: 'Online',
     1: 'Offline',
     2: 'Error',
   };
-
   const temperatureUnit = {
     c: `${String.fromCharCode(176)}C`,
     f: `${String.fromCharCode(176)}F`,
@@ -21,13 +19,11 @@ const tableFunc = ($) => {
       })
         .then(res => res.json())
         .then((json) => {
+          // utils.cloneOriginalMachineData(json);
           originalMachineData = JSON.parse(JSON.stringify(json));
-          const newJson = Object.assign([], json);
-          resolve(newJson);
+          resolve(json);
         })
-        .catch((error) => {
-          reject(error);
-        });
+        .catch(reject);
     }),
 
     addMachineData: machineData => new Promise((resolve, reject) => {
@@ -37,12 +33,8 @@ const tableFunc = ($) => {
         body: machineData,
       })
         .then(res => res.json())
-        .then((json) => {
-          resolve(json);
-        })
-        .catch((error) => {
-          reject(error);
-        });
+        .then(resolve)
+        .catch(reject);
     }),
 
     updateMachineData: (machineData, id) => new Promise((resolve, reject) => {
@@ -52,12 +44,8 @@ const tableFunc = ($) => {
         body: machineData,
       })
         .then(res => res.json())
-        .then((json) => {
-          resolve(json);
-        })
-        .catch((error) => {
-          reject(error);
-        });
+        .then(resolve)
+        .catch(reject);
     }),
 
     removeMachineData: id => new Promise((resolve, reject) => {
@@ -66,12 +54,8 @@ const tableFunc = ($) => {
         headers: { 'Content-Type': 'application/json' },
       })
         .then(res => res.json())
-        .then((json) => {
-          resolve(json);
-        })
-        .catch((error) => {
-          reject(error);
-        });
+        .then(resolve)
+        .catch(reject);
     }),
 
     getTableTemplate: () => new Promise((resolve, reject) => {
@@ -94,9 +78,16 @@ const tableFunc = ($) => {
   };
 
   const utils = {
+    paddingZeroLeft: (str, lenght) => {
+      if (str.length >= lenght) {
+        return str;
+      }
+      return utils.paddingZeroLeft(`0${str}`, lenght);
+    },
+
     processMachineData: (data) => {
       const newData = data.map((item) => {
-        const itemId = item.id.toString().padStart(3, '0');
+        const itemId = utils.paddingZeroLeft(item.id, 3);
         const itemTemperature = item.temperature + temperatureUnit.c;
         const itemStatus = status[item.status];
         const itemLowercaseStatus = itemStatus.toLowerCase();
@@ -165,8 +156,7 @@ const tableFunc = ($) => {
           const end = start + 5;
           const pagingTableData = list.slice(start, end);
 
-          const processedData = utils.processMachineData(pagingTableData);
-          utils.renderTableData(tableTemplate, processedData);
+          utils.renderTableData(tableTemplate, pagingTableData);
           utils.bindUI();
         },
       });
@@ -207,8 +197,9 @@ const tableFunc = ($) => {
     },
 
     renderTableData: ((template, machineData) => {
+      const processedData = utils.processMachineData(machineData);
       const machineTemplateHtml = $(template).html();
-      $('#table-entry').html(Mustache.render(machineTemplateHtml, machineData));
+      $('#table-entry').html(Mustache.render(machineTemplateHtml, processedData));
     }),
 
     renderPagingData: ((template, list) => {
@@ -218,13 +209,21 @@ const tableFunc = ($) => {
       $('#paging-entry').html(Mustache.render(pagingTemplateHtml, pagingData));
     }),
 
+    updateMachineData: ((id, newAddress, newRegion, originalData) => {
+      const findRowData = originalData.find(item => item.id === parseInt(id, 10));
+      findRowData.address = newAddress;
+      findRowData.region = newRegion;
+
+      service.updateMachineData(JSON.stringify(findRowData), parseInt(id, 10))
+        .then(() => {
+          utils.initTable();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }),
+
     bindUI: () => {
-      $('.open-advanced-search').click((e) => {
-        e.stopImmediatePropagation();
-
-        utils.switchAdvancedSearch();
-      });
-
       $('.row-edit').click((e) => {
         if ($(e.currentTarget).parent().hasClass('disabled')) {
           return;
@@ -296,20 +295,29 @@ const tableFunc = ($) => {
 
         const newAddress = $trEl.children().children('input[name=inputAddress]').val();
         const newRegion = $trEl.children().children('input[name=inputRegion]').val();
-        const findRowData = originalMachineData.find(item => item.id === parseInt(id, 10));
-        findRowData.address = newAddress;
-        findRowData.region = newRegion;
 
-        service.updateMachineData(JSON.stringify(findRowData), parseInt(id, 10))
-          .then(() => {
-            utils.initTable();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        if (originalMachineData === null) {
+          service
+            .getMachineData()
+            .then((data) => {
+              originalMachineData = data;
+            })
+            .then(() => {
+              utils.updateMachineData(id, newAddress, newRegion, originalMachineData);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          utils.updateMachineData(id, newAddress, newRegion, originalMachineData);
+        }
       });
 
       $('.row-detail').click((e) => {
+        if ($(e.currentTarget).parent().hasClass('disabled')) {
+          return;
+        }
+
         const $trEl = $(e.currentTarget).closest('.action-detail').parent();
         const id = $trEl.data('machine-id');
         const model = $trEl.children('.model-text').text();
@@ -326,6 +334,17 @@ const tableFunc = ($) => {
         $('input[name=editRegion]').val(region);
       });
 
+      $('.row-remove').click((e) => {
+        if ($(e.currentTarget).parent().hasClass('disabled')) {
+          return;
+        }
+
+        const $trEl = $(e.currentTarget).closest('.action-setup').parent();
+        const machineId = $trEl.data('machine-id');
+
+        $('#remove-machine-button').attr('data-machine-id', machineId);
+      });
+
       $('.remove-machine-button').click((e) => {
         e.stopImmediatePropagation();
         $('#removeMachineModal').modal('hide');
@@ -340,13 +359,6 @@ const tableFunc = ($) => {
           .catch((error) => {
             console.log(error);
           });
-      });
-
-      $('.row-remove').click((e) => {
-        const $trEl = $(e.currentTarget).closest('.action-setup').parent();
-        const machineId = $trEl.data('machine-id');
-
-        $('#remove-machine-button').attr('data-machine-id', machineId);
       });
 
       $('.add-machine-button').click((e) => {
@@ -390,6 +402,12 @@ const tableFunc = ($) => {
         }
       });
 
+      $('.open-advanced-search').click((e) => {
+        e.stopImmediatePropagation();
+
+        utils.switchAdvancedSearch();
+      });
+
       $('.advanced-search-button').click((e) => {
         e.stopImmediatePropagation();
 
@@ -417,3 +435,7 @@ const tableFunc = ($) => {
 
   return { service, utils };
 };
+
+if (typeof module !== 'undefined' && typeof require !== 'undefined') {
+  module.exports = tableFunc;
+}

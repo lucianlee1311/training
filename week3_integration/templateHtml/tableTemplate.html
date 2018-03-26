@@ -29,13 +29,23 @@
         <td class="action-detail">
           <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
             <i class="row-example"></i>
+            {{#isDisabled}}
+            <i class="fa fa-list-alt fa-lg row-detail"></i>
+            {{/isDisabled}}
+            {{^isDisabled}}
             <i class="fa fa-list-alt fa-lg row-detail" data-toggle="modal" data-target="#machineDetailModal"></i>
+            {{/isDisabled}}
           </div>
         </td>
         <td class="action-setup">
           <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
             <i class="fa fa-pencil-square-o fa-lg row-edit"></i>
+            {{#isDisabled}}
+            <i class="fa fa-trash-o fa-lg row-remove"></i>
+            {{/isDisabled}}
+            {{^isDisabled}}
             <i class="fa fa-trash-o fa-lg row-remove" data-toggle="modal" data-target="#removeMachineModal"></i>
+            {{/isDisabled}}
             <i class="row-example"></i>
           </div>
         </td>
