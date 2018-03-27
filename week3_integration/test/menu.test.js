@@ -63,11 +63,6 @@ test('test hover menu', () => {
   menuApp($, mustache).utils.renderMenuData([templateText, list]);
 
   menuApp($, mustache).utils.bindUI();
-  // menuApp($, mustache).utils.hoverMenu();
-  // $('.panel, .panel-collapse').hover();
-  $('.panel, .panel-collapse').on('hover');
-  // console.log('111', $('.panel, .panel-collapse'));
-  // console.log('222', $('.panel > .panel-collapse')[0].is(':visible'));
+  $('.panel, .panel-collapse').hover();
   // expect($('.panel > .panel-collapse').is(':visible')).toEqual(true);
-  // expect(true).toEqual(true);
 });

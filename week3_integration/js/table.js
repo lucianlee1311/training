@@ -19,7 +19,6 @@ const tableFunc = ($, Mustache) => {
       })
         .then(res => res.json())
         .then((json) => {
-          // utils.cloneOriginalMachineData(json);
           originalMachineData = JSON.parse(JSON.stringify(json));
           resolve(json);
         })
