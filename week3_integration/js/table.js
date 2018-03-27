@@ -1,6 +1,7 @@
 const tableFunc = ($, Mustache) => {
   const disableIds = [];
   let originalMachineData = null;
+  const pageLimit = 5;
   const status = {
     0: 'Online',
     1: 'Offline',
@@ -137,22 +138,23 @@ const tableFunc = ($, Mustache) => {
     },
 
     initPagination: (tableTemplate, list) => {
-      if ($('#pagination-demo2').data('twbs-pagination')) {
-        $('#pagination-demo2').twbsPagination('destroy');
+      if ($('#pagination-entry').data('twbs-pagination')) {
+        $('#pagination-entry').twbsPagination('destroy');
       }
       if (list.length <= 0) {
         return;
       }
-      $('#pagination-demo2').twbsPagination({
-        totalPages: Math.ceil(list.length / 5),
-        visiblePages: list.length > 5 ? 5 : list.length,
+
+      $('#pagination-entry').twbsPagination({
+        totalPages: Math.ceil(list.length / pageLimit),
+        visiblePages: list.length > pageLimit ? pageLimit : list.length,
         first: '<i class="fa fa-angle-double-left"></i>',
         prev: '<i class="fa fa-angle-left"></i>',
         next: '<i class="fa fa-angle-right"></i>',
         last: '<i class="fa fa-angle-double-right"></i>',
         onPageClick: (event, page) => {
-          const start = (page - 1) * 5;
-          const end = start + 5;
+          const start = (page - 1) * pageLimit;
+          const end = start + pageLimit;
           const pagingTableData = list.slice(start, end);
 
           utils.renderTableData(tableTemplate, pagingTableData);

@@ -2,8 +2,6 @@ const tableApp = require('../js/table');
 const fs = require('fs');
 const $ = require('jquery');
 const mustache = require('mustache');
-// const fetch = require('node-fetch');
-// const bootstrap = require('bootstrap');
 
 const list = [
   {
@@ -22,7 +20,7 @@ const list = [
     "temperature": 0,
     "address": "台北市大安區大安里新生南路二段新生段1號21樓(大安森林公園 - 南側)",
     "region": "大安區",
-    "disable": false
+    "disable": true
   }
 ];
 
@@ -45,9 +43,15 @@ const processedList = [
     "temperature": "0°C",
     "address": "台北市大安區大安里新生南路二段新生段1號21樓(大安森林公園 - 南側)",
     "region": "大安區",
-    "isDisabled": false
+    "isDisabled": true
   }
 ];
+
+// test('test get machine data', () => {
+//   expect.assertions(1);
+//   return expect(tableApp($, mustache).service.getMachineData()).resolves.toEqual('Paul');
+//   // expect($('.paging-information').text()).toMatch(list.length + ' Models');
+// });
 
 test('test render paging total number', () => {
   const templateText = fs.readFileSync('templateHtml/pagingInformationTemplate.html').toString();
@@ -62,19 +66,34 @@ test('test process table data', () => {
   expect(processedData).toMatchObject(output2);
 });
 
-// test('test render table', () => {
-  // const templateText = fs.readFileSync('templateHtml/tableTemplate.html').toString();
-  // document.body.innerHTML = `<div id="table-entry"></div>`;
-  // tableApp($, mustache).utils.initTable();
-  // expect($('.model-text').first().text()).toMatch(processedList[0].model);
-// });
-
-test('test pading left zero', () => {
-  const output3 = tableApp($, mustache).utils.paddingZeroLeft('1', 5);
-  expect(output3).toMatch('00001');
+test('test process table data: no data', () => {
+  const output2 = { page: { loaded: false, list: [] } };
+  const processedData = tableApp($, mustache).utils.processMachineData([]);
+  expect(processedData).toMatchObject(output2);
 });
 
-test('test init table', () => {
+test('test render table', () => {
+  const templateText = fs.readFileSync('templateHtml/tableTemplate.html').toString();
+  document.body.innerHTML = `<div id="table-entry"></div>`;
+  tableApp($, mustache).utils.renderTableData(templateText, list);
+  expect($('.model-text').first().text()).toMatch(processedList[0].model);
+});
+
+test('test init pagination: no data', () => {
+  const templateText = fs.readFileSync('templateHtml/tableTemplate.html').toString();
+  document.body.innerHTML = `<div id="table-entry"></div>`;
+  tableApp($, mustache).utils.initPagination(templateText, []);
+  expect(twbsPagination.mock.calls.length).toBe(0);
+});
+
+test('test init pagination', () => {
+  const templateText = fs.readFileSync('templateHtml/tableTemplate.html').toString();
+  document.body.innerHTML = `<div id="table-entry"></div>`;
+  tableApp($, mustache).utils.initPagination(templateText, list);
+  expect(twbsPagination.mock.calls.length).toBe(1);
+});
+
+test('test pading left zero', () => {
   const output3 = tableApp($, mustache).utils.paddingZeroLeft('1', 5);
   expect(output3).toMatch('00001');
 });
@@ -82,13 +101,6 @@ test('test init table', () => {
 test('test switch advanced search', () => {
   tableApp($, mustache).utils.switchAdvancedSearch();
   expect($('.advanced-search').hasClass('hidden')).toEqual(false);
-});
-
-test('test init pagination', () => {
-  const templateText = fs.readFileSync('templateHtml/tableTemplate.html').toString();
-  document.body.innerHTML = `<div id="table-entry"></div>`;
-  // tableApp($, mustache).utils.initPagination(templateText, list);
-  // expect($('.model-text').first().text()).toMatch(processedList[0].model);
 });
 
 test('test click row-edit', () => {
