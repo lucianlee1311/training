@@ -1,6 +1,8 @@
 const tableFunc = ($, Mustache) => {
   const disableIds = [];
   let originalMachineData = null;
+  let tableTemplate = null;
+  let pagingInformationTemplate = null;
   const pageLimit = 5;
   const status = {
     0: 'Online',
@@ -63,7 +65,10 @@ const tableFunc = ($, Mustache) => {
         method: 'GET',
       })
         .then(res => res.text())
-        .then(resolve)
+        .then((text) => {
+          tableTemplate = text;
+          resolve(text);
+        })
         .catch(reject);
     }),
 
@@ -72,14 +77,17 @@ const tableFunc = ($, Mustache) => {
         method: 'GET',
       })
         .then(res => res.text())
-        .then(resolve)
+        .then((text) => {
+          pagingInformationTemplate = text;
+          resolve(text);
+        })
         .catch(reject);
     }),
   };
 
   const utils = {
     paddingZeroLeft: (str, lenght) => {
-      if (str.length >= lenght) {
+      if (str.toString().length >= lenght) {
         return str;
       }
       return utils.paddingZeroLeft(`0${str}`, lenght);
@@ -141,7 +149,7 @@ const tableFunc = ($, Mustache) => {
       if ($('#pagination-entry').data('twbs-pagination')) {
         $('#pagination-entry').twbsPagination('destroy');
       }
-      if (list.length <= 0) {
+      if (list === null || list.length <= 0) {
         return;
       }
 
@@ -163,40 +171,6 @@ const tableFunc = ($, Mustache) => {
       });
     },
 
-    initTable: () => {
-      Promise.all([service.getTableTemplate(), service.getPagingInformationTemplate(), service.getMachineData()])
-        .then(([tableTemplate, pagingInformationTemplate, data]) => {
-          utils.initPagination(tableTemplate, data);
-          utils.renderPagingData(pagingInformationTemplate, data);
-        })
-        .then(() => {
-          utils.bindUI();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-
-    reloadTable: (data) => {
-      Promise.all([service.getTableTemplate(), service.getPagingInformationTemplate()])
-        .then(([tableTemplate, pagingInformationTemplate]) => {
-          if (data.length <= 0) {
-            utils.initPagination(tableTemplate, data);
-            utils.renderTableData(tableTemplate, data);
-            utils.renderPagingData(pagingInformationTemplate, data);
-          } else {
-            utils.initPagination(tableTemplate, data);
-            utils.renderPagingData(pagingInformationTemplate, data);
-          }
-        })
-        .then(() => {
-          utils.bindUI();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-
     renderTableData: ((template, machineData) => {
       const processedData = utils.processMachineData(machineData);
       const machineTemplateHtml = $(template).html();
@@ -210,18 +184,54 @@ const tableFunc = ($, Mustache) => {
       $('#paging-entry').html(Mustache.render(pagingTemplateHtml, pagingData));
     }),
 
-    updateMachineData: ((id, newAddress, newRegion, originalData) => {
-      const findRowData = originalData.find(item => item.id === parseInt(id, 10));
-      findRowData.address = newAddress;
-      findRowData.region = newRegion;
-
-      service.updateMachineData(JSON.stringify(findRowData), parseInt(id, 10))
+    addMachineData: (tableTemplate, pagingInformationTemplate, originalMachineData, addMachineData, addId) => new Promise((resolve, reject) => {
+      service.addMachineData(JSON.stringify(addMachineData))
         .then(() => {
-          utils.initTable();
+          originalMachineData.push(addMachineData);
+
+          utils.initPagination(tableTemplate, originalMachineData);
+          utils.renderPagingData(pagingInformationTemplate, originalMachineData);
+          resolve(addId);
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch(reject);
+    }),
+
+    updateMachineData: (tableTemplate, pagingInformationTemplate, originalMachineData, updateRowData, updateId) => new Promise((resolve, reject) => {
+      service.updateMachineData(JSON.stringify(updateRowData), updateId)
+        .then(() => {
+          const findIndex = originalMachineData.findIndex(item => item.id === updateId);
+          originalMachineData.splice(findIndex, 1, updateRowData);
+
+          utils.initPagination(tableTemplate, originalMachineData);
+          utils.renderPagingData(pagingInformationTemplate, originalMachineData);
+          resolve(updateId);
+        })
+        .catch(reject);
+    }),
+
+    removeMachineData: (tableTemplate, pagingInformationTemplate, originalMachineData, removeId) => new Promise((resolve, reject) => {
+      service.removeMachineData(removeId)
+        .then(() => {
+          const findIndex = originalMachineData.findIndex(item => item.id === removeId);
+          originalMachineData.splice(findIndex, 1);
+
+          utils.initPagination(tableTemplate, originalMachineData);
+          utils.renderPagingData(pagingInformationTemplate, originalMachineData);
+
+          resolve(removeId);
+        })
+        .catch(reject);
+    }),
+
+    renderData: ((tableTemplate, pagingInformationTemplate, data) => {
+      if (data.length <= 0) {
+        utils.initPagination(tableTemplate, data);
+        utils.renderTableData(tableTemplate, data);
+        utils.renderPagingData(pagingInformationTemplate, data);
+      } else {
+        utils.initPagination(tableTemplate, data);
+        utils.renderPagingData(pagingInformationTemplate, data);
+      }
     }),
 
     bindUI: () => {
@@ -276,7 +286,7 @@ const tableFunc = ($, Mustache) => {
         e.stopImmediatePropagation();
 
         const $trEl = $(e.currentTarget).closest('.action-edit').parent();
-        const id = $trEl.data('machine-id');
+        const machineId = $trEl.data('machine-id');
 
         $trEl.children('.address-text').removeClass('hidden');
         $trEl.children('.address-edit').addClass('hidden');
@@ -302,15 +312,26 @@ const tableFunc = ($, Mustache) => {
             .getMachineData()
             .then((data) => {
               originalMachineData = data;
+              return data;
             })
-            .then(() => {
-              utils.updateMachineData(id, newAddress, newRegion, originalMachineData);
+            .then((data) => {
+              const updateId = parseInt(machineId, 10);
+              const updateRowData = data.find(item => item.id === updateId);
+              updateRowData.address = newAddress;
+              updateRowData.region = newRegion;
+
+              utils.updateMachineData(tableTemplate, pagingInformationTemplate, originalMachineData, updateRowData, updateId);
             })
             .catch((error) => {
               console.log(error);
             });
         } else {
-          utils.updateMachineData(id, newAddress, newRegion, originalMachineData);
+          const updateId = parseInt(machineId, 10);
+          const updateRowData = originalMachineData.find(item => item.id === updateId);
+          updateRowData.address = newAddress;
+          updateRowData.region = newRegion;
+
+          utils.updateMachineData(tableTemplate, pagingInformationTemplate, originalMachineData, updateRowData, updateId);
         }
       });
 
@@ -340,9 +361,7 @@ const tableFunc = ($, Mustache) => {
           return;
         }
 
-        const $trEl = $(e.currentTarget).closest('.action-setup').parent();
-        const machineId = $trEl.data('machine-id');
-
+        const machineId = $(e.currentTarget).closest('.action-setup').parent().data('machine-id');
         $('#remove-machine-button').attr('data-machine-id', machineId);
       });
 
@@ -350,16 +369,12 @@ const tableFunc = ($, Mustache) => {
         e.stopImmediatePropagation();
         $('#removeMachineModal').modal('hide');
 
-        const $trEl = $(e.currentTarget);
-        const removeId = $trEl.data('machine-id');
-
-        service.removeMachineData(parseInt(removeId, 10))
-          .then(() => {
-            utils.initTable();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        let removeId = $(e.currentTarget).data('machine-id');
+        if (removeId === '') {
+          return;
+        }
+        removeId = parseInt(removeId, 10);
+        utils.removeMachineData(tableTemplate, pagingInformationTemplate, originalMachineData, removeId);
       });
 
       $('.add-machine-button').click((e) => {
@@ -372,8 +387,13 @@ const tableFunc = ($, Mustache) => {
         const addTemperature = $('input[name=addTemperature]').val();
         const addAddress = $('input[name=addAddress]').val();
         const addRegion = $('input[name=addRegion]').val();
+        let addId = 0;
+        if (originalMachineData.length > 0) {
+          addId = originalMachineData[originalMachineData.length - 1].id + 1;
+        }
 
-        const newMachineData = {
+        const addMachineData = {
+          id: addId,
           model: addModel,
           status: addStatus,
           temperature: addTemperature,
@@ -381,14 +401,7 @@ const tableFunc = ($, Mustache) => {
           region: addRegion,
           disable: false,
         };
-
-        service.addMachineData(JSON.stringify(newMachineData))
-          .then(() => {
-            utils.initTable();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        utils.addMachineData(tableTemplate, pagingInformationTemplate, originalMachineData, addMachineData, addId);
       });
 
       $('.search-button').click((e) => {
@@ -396,17 +409,18 @@ const tableFunc = ($, Mustache) => {
 
         const searchKeyword = $('input[name=searchKeyword]').val();
         if (searchKeyword !== '') {
-          const result = originalMachineData.filter(item => item.model.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || item.address.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1);
-          utils.reloadTable(result);
+          const resultData = originalMachineData.filter((item) => {
+            const isModel = item.model.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1;
+            const isAddress = item.address.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1;
+            return (isModel || isAddress);
+          });
+          utils.renderData(tableTemplate, pagingInformationTemplate, resultData);
         } else {
-          utils.reloadTable(originalMachineData);
+          if (originalMachineData === null) {
+            return;
+          }
+          utils.renderData(tableTemplate, pagingInformationTemplate, originalMachineData);
         }
-      });
-
-      $('.open-advanced-search').click((e) => {
-        e.stopImmediatePropagation();
-
-        utils.switchAdvancedSearch();
       });
 
       $('.advanced-search-button').click((e) => {
@@ -414,13 +428,30 @@ const tableFunc = ($, Mustache) => {
 
         const advancedKeyword = $('input[name=advancedKeyword]').val();
         const searchStatus = $('select[name=advancedStatus]').val();
-        const result = originalMachineData.filter((item) => {
+        const resultData = originalMachineData.filter((item) => {
           if (advancedKeyword !== '') {
-            return ((item.model.indexOf(advancedKeyword) > -1 || item.address.indexOf(advancedKeyword) > -1) && (item.status.toString() === searchStatus));
+            const isModel = item.model.toLowerCase().indexOf(advancedKeyword.toLowerCase()) > -1;
+            const isAddress = item.address.toLowerCase().indexOf(advancedKeyword.toLowerCase()) > -1;
+            const isStatus = item.status.toString() === searchStatus;
+            return ((isModel || isAddress) && isStatus);
           }
           return (item.status.toString() === searchStatus);
         });
-        utils.reloadTable(result);
+
+        if (resultData.length <= 0) {
+          utils.initPagination(tableTemplate, resultData);
+          utils.renderTableData(tableTemplate, resultData);
+          utils.renderPagingData(pagingInformationTemplate, resultData);
+        } else {
+          utils.initPagination(tableTemplate, resultData);
+          utils.renderPagingData(pagingInformationTemplate, resultData);
+        }
+
+        utils.switchAdvancedSearch();
+      });
+
+      $('.open-advanced-search').click((e) => {
+        e.stopImmediatePropagation();
 
         utils.switchAdvancedSearch();
       });
