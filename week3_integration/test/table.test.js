@@ -62,14 +62,19 @@ test('test process table data', () => {
   expect(processedData).toMatchObject(output2);
 });
 
-test('test render table', () => {
-  const templateText = fs.readFileSync('templateHtml/tableTemplate.html').toString();
-  document.body.innerHTML = `<div id="table-entry"></div>`;
-  tableApp($, mustache).utils.renderTableData(templateText, list);
-  expect($('.model-text').first().text()).toMatch(processedList[0].model);
-});
+// test('test render table', () => {
+  // const templateText = fs.readFileSync('templateHtml/tableTemplate.html').toString();
+  // document.body.innerHTML = `<div id="table-entry"></div>`;
+  // tableApp($, mustache).utils.initTable();
+  // expect($('.model-text').first().text()).toMatch(processedList[0].model);
+// });
 
 test('test pading left zero', () => {
+  const output3 = tableApp($, mustache).utils.paddingZeroLeft('1', 5);
+  expect(output3).toMatch('00001');
+});
+
+test('test init table', () => {
   const output3 = tableApp($, mustache).utils.paddingZeroLeft('1', 5);
   expect(output3).toMatch('00001');
 });
@@ -153,27 +158,28 @@ test('test click remove-machine-button', () => {
 });
 
 test('test click search-button', () => {
-  const templateText = fs.readFileSync('templateHtml/tableTemplate.html').toString();
-  document.body.innerHTML = `<div id="table-entry"></div>`;
-  tableApp($, mustache).utils.renderTableData(templateText, list);
+  const indexTemplateText = fs.readFileSync('index.html').toString();
+  document.body.innerHTML = indexTemplateText;
+
   tableApp($, mustache).utils.bindUI();
   // $('.search-button').click();
   // expect($('.search-button').data('machine-id')).toEqual(processedList[0].id);
 });
 
 test('test click open-advanced-search', () => {
-  const templateText = fs.readFileSync('templateHtml/tableTemplate.html').toString();
-  document.body.innerHTML = `<div id="table-entry"></div>`;
-  tableApp($, mustache).utils.renderTableData(templateText, list);
+  const indexTemplateText = fs.readFileSync('index.html').toString();
+  document.body.innerHTML = indexTemplateText;
+
   tableApp($, mustache).utils.bindUI();
-  // $('.open-advanced-search').click();
-  // expect($('.advanced-search').hasClass('hidden')).toEqual(false);
+  $('.open-advanced-search').click();
+  expect($('.advanced-search').hasClass('hidden')).toEqual(false);
 });
 
 test('test click advanced-close-button', () => {
-  const templateText = fs.readFileSync('templateHtml/tableTemplate.html').toString();
-  document.body.innerHTML = `<div id="table-entry"></div>`;
-  tableApp($, mustache).utils.renderTableData(templateText, list);
+  const indexTemplateText = fs.readFileSync('index.html').toString();
+  document.body.innerHTML = indexTemplateText;
+
   tableApp($, mustache).utils.bindUI();
+  $('.advanced-close-button').click();
   expect($('.advanced-search').hasClass('hidden')).toEqual(false);
 });
