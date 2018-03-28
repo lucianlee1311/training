@@ -3,7 +3,8 @@ const tableFunc = ($, Mustache) => {
   let originalMachineData = null;
   let tableTemplate = null;
   let pagingInformationTemplate = null;
-  const pageLimit = 5;
+  const visiblePages = 5;
+  const visibleContents = 5;
   const status = {
     0: 'Online',
     1: 'Offline',
@@ -145,7 +146,7 @@ const tableFunc = ($, Mustache) => {
       }
     },
 
-    initPagination: (tableTemplate, list) => {
+    initPagination: (tableTpl, list) => {
       if ($('#pagination-entry').data('twbs-pagination')) {
         $('#pagination-entry').twbsPagination('destroy');
       }
@@ -154,18 +155,18 @@ const tableFunc = ($, Mustache) => {
       }
 
       $('#pagination-entry').twbsPagination({
-        totalPages: Math.ceil(list.length / pageLimit),
-        visiblePages: list.length > pageLimit ? pageLimit : list.length,
+        totalPages: Math.ceil(list.length / visibleContents),
+        visiblePages: list.length > visiblePages ? visiblePages : list.length,
         first: '<i class="fa fa-angle-double-left"></i>',
         prev: '<i class="fa fa-angle-left"></i>',
         next: '<i class="fa fa-angle-right"></i>',
         last: '<i class="fa fa-angle-double-right"></i>',
         onPageClick: (event, page) => {
-          const start = (page - 1) * pageLimit;
-          const end = start + pageLimit;
+          const start = (page - 1) * visibleContents;
+          const end = start + visibleContents;
           const pagingTableData = list.slice(start, end);
 
-          utils.renderTableData(tableTemplate, pagingTableData);
+          utils.renderTableData(tableTpl, pagingTableData);
           utils.bindUI();
         },
       });
@@ -184,53 +185,82 @@ const tableFunc = ($, Mustache) => {
       $('#paging-entry').html(Mustache.render(pagingTemplateHtml, pagingData));
     }),
 
-    addMachineData: (tableTemplate, pagingInformationTemplate, originalMachineData, addMachineData, addId) => new Promise((resolve, reject) => {
+    renderTemplateData: ((tableTpl, pagingInformationTpl, data) => {
+      if (data.length <= 0) {
+        utils.initPagination(tableTpl, data);
+        utils.renderTableData(tableTpl, data);
+        utils.renderPagingData(pagingInformationTpl, data);
+      } else {
+        utils.initPagination(tableTpl, data);
+        utils.renderPagingData(pagingInformationTpl, data);
+      }
+    }),
+
+    addMachineData: (tableTpl, pagingInformationTpl, orgData, addMachineData, addId) => new Promise((resolve, reject) => {
       service.addMachineData(JSON.stringify(addMachineData))
         .then(() => {
-          originalMachineData.push(addMachineData);
+          orgData.push(addMachineData);
 
-          utils.initPagination(tableTemplate, originalMachineData);
-          utils.renderPagingData(pagingInformationTemplate, originalMachineData);
+          utils.initPagination(tableTpl, orgData);
+          utils.renderPagingData(pagingInformationTpl, orgData);
           resolve(addId);
         })
         .catch(reject);
     }),
 
-    updateMachineData: (tableTemplate, pagingInformationTemplate, originalMachineData, updateRowData, updateId) => new Promise((resolve, reject) => {
+    updateMachineData: (tableTpl, pagingInformationTpl, orgData, updateRowData, updateId) => new Promise((resolve, reject) => {
       service.updateMachineData(JSON.stringify(updateRowData), updateId)
         .then(() => {
-          const findIndex = originalMachineData.findIndex(item => item.id === updateId);
-          originalMachineData.splice(findIndex, 1, updateRowData);
+          const findIndex = orgData.findIndex(item => item.id === updateId);
+          orgData.splice(findIndex, 1, updateRowData);
 
-          utils.initPagination(tableTemplate, originalMachineData);
-          utils.renderPagingData(pagingInformationTemplate, originalMachineData);
+          utils.initPagination(tableTpl, orgData);
+          utils.renderPagingData(pagingInformationTpl, orgData);
           resolve(updateId);
         })
         .catch(reject);
     }),
 
-    removeMachineData: (tableTemplate, pagingInformationTemplate, originalMachineData, removeId) => new Promise((resolve, reject) => {
+    removeMachineData: (tableTpl, pagingInformationTpl, orgData, removeId) => new Promise((resolve, reject) => {
       service.removeMachineData(removeId)
         .then(() => {
-          const findIndex = originalMachineData.findIndex(item => item.id === removeId);
-          originalMachineData.splice(findIndex, 1);
+          const findIndex = orgData.findIndex(item => item.id === removeId);
+          orgData.splice(findIndex, 1);
 
-          utils.initPagination(tableTemplate, originalMachineData);
-          utils.renderPagingData(pagingInformationTemplate, originalMachineData);
+          utils.initPagination(tableTpl, orgData);
+          utils.renderPagingData(pagingInformationTpl, orgData);
 
           resolve(removeId);
         })
         .catch(reject);
     }),
 
-    renderData: ((tableTemplate, pagingInformationTemplate, data) => {
-      if (data.length <= 0) {
-        utils.initPagination(tableTemplate, data);
-        utils.renderTableData(tableTemplate, data);
-        utils.renderPagingData(pagingInformationTemplate, data);
-      } else {
-        utils.initPagination(tableTemplate, data);
-        utils.renderPagingData(pagingInformationTemplate, data);
+    searchData: ((tableTpl, pagingInformationTpl, orgData, keyword) => {
+      if (keyword !== '') {
+        const resultData = orgData.filter((item) => {
+          const isModel = item.model.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+          const isAddress = item.address.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+          return (isModel || isAddress);
+        });
+        utils.renderTemplateData(tableTpl, pagingInformationTpl, resultData);
+      } else if (orgData !== null) {
+        utils.renderTemplateData(tableTpl, pagingInformationTpl, orgData);
+      }
+    }),
+
+    advancedSearchData: ((tableTpl, pagingInformationTpl, orgData, keyword, searchStatus) => {
+      if (orgData !== null) {
+        const resultData = orgData.filter((item) => {
+          if (keyword !== '') {
+            const isModel = item.model.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+            const isAddress = item.address.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
+            const isStatus = item.status.toString() === searchStatus;
+            return ((isModel || isAddress) && isStatus);
+          }
+          return (item.status.toString() === searchStatus);
+        });
+        utils.renderTemplateData(tableTpl, pagingInformationTpl, resultData);
+        utils.switchAdvancedSearch();
       }
     }),
 
@@ -306,32 +336,16 @@ const tableFunc = ($, Mustache) => {
 
         const newAddress = $trEl.children().children('input[name=inputAddress]').val();
         const newRegion = $trEl.children().children('input[name=inputRegion]').val();
-
-        if (originalMachineData === null) {
-          service
-            .getMachineData()
-            .then((data) => {
-              originalMachineData = data;
-              return data;
-            })
-            .then((data) => {
-              const updateId = parseInt(machineId, 10);
-              const updateRowData = data.find(item => item.id === updateId);
-              updateRowData.address = newAddress;
-              updateRowData.region = newRegion;
-
-              utils.updateMachineData(tableTemplate, pagingInformationTemplate, originalMachineData, updateRowData, updateId);
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        } else {
+        if (originalMachineData !== null) {
           const updateId = parseInt(machineId, 10);
           const updateRowData = originalMachineData.find(item => item.id === updateId);
           updateRowData.address = newAddress;
           updateRowData.region = newRegion;
 
-          utils.updateMachineData(tableTemplate, pagingInformationTemplate, originalMachineData, updateRowData, updateId);
+          utils.updateMachineData(tableTemplate, pagingInformationTemplate, originalMachineData, updateRowData, updateId)
+            .catch((error) => {
+              console.log(error);
+            });
         }
       });
 
@@ -374,7 +388,10 @@ const tableFunc = ($, Mustache) => {
           return;
         }
         removeId = parseInt(removeId, 10);
-        utils.removeMachineData(tableTemplate, pagingInformationTemplate, originalMachineData, removeId);
+        utils.removeMachineData(tableTemplate, pagingInformationTemplate, originalMachineData, removeId)
+          .catch((error) => {
+            console.log(error);
+          });
       });
 
       $('.add-machine-button').click((e) => {
@@ -388,39 +405,31 @@ const tableFunc = ($, Mustache) => {
         const addAddress = $('input[name=addAddress]').val();
         const addRegion = $('input[name=addRegion]').val();
         let addId = 0;
-        if (originalMachineData.length > 0) {
-          addId = originalMachineData[originalMachineData.length - 1].id + 1;
+        if (originalMachineData !== null) {
+          if (originalMachineData.length > 0) {
+            addId = originalMachineData[originalMachineData.length - 1].id + 1;
+          }
+          const addMachineData = {
+            id: addId,
+            model: addModel,
+            status: addStatus,
+            temperature: addTemperature,
+            address: addAddress,
+            region: addRegion,
+            disable: false,
+          };
+          utils.addMachineData(tableTemplate, pagingInformationTemplate, originalMachineData, addMachineData, addId)
+            .catch((error) => {
+              console.log(error);
+            });
         }
-
-        const addMachineData = {
-          id: addId,
-          model: addModel,
-          status: addStatus,
-          temperature: addTemperature,
-          address: addAddress,
-          region: addRegion,
-          disable: false,
-        };
-        utils.addMachineData(tableTemplate, pagingInformationTemplate, originalMachineData, addMachineData, addId);
       });
 
       $('.search-button').click((e) => {
         e.stopImmediatePropagation();
 
         const searchKeyword = $('input[name=searchKeyword]').val();
-        if (searchKeyword !== '') {
-          const resultData = originalMachineData.filter((item) => {
-            const isModel = item.model.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1;
-            const isAddress = item.address.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1;
-            return (isModel || isAddress);
-          });
-          utils.renderData(tableTemplate, pagingInformationTemplate, resultData);
-        } else {
-          if (originalMachineData === null) {
-            return;
-          }
-          utils.renderData(tableTemplate, pagingInformationTemplate, originalMachineData);
-        }
+        utils.searchData(tableTemplate, pagingInformationTemplate, originalMachineData, searchKeyword);
       });
 
       $('.advanced-search-button').click((e) => {
@@ -428,26 +437,7 @@ const tableFunc = ($, Mustache) => {
 
         const advancedKeyword = $('input[name=advancedKeyword]').val();
         const searchStatus = $('select[name=advancedStatus]').val();
-        const resultData = originalMachineData.filter((item) => {
-          if (advancedKeyword !== '') {
-            const isModel = item.model.toLowerCase().indexOf(advancedKeyword.toLowerCase()) > -1;
-            const isAddress = item.address.toLowerCase().indexOf(advancedKeyword.toLowerCase()) > -1;
-            const isStatus = item.status.toString() === searchStatus;
-            return ((isModel || isAddress) && isStatus);
-          }
-          return (item.status.toString() === searchStatus);
-        });
-
-        if (resultData.length <= 0) {
-          utils.initPagination(tableTemplate, resultData);
-          utils.renderTableData(tableTemplate, resultData);
-          utils.renderPagingData(pagingInformationTemplate, resultData);
-        } else {
-          utils.initPagination(tableTemplate, resultData);
-          utils.renderPagingData(pagingInformationTemplate, resultData);
-        }
-
-        utils.switchAdvancedSearch();
+        utils.advancedSearchData(tableTemplate, pagingInformationTemplate, originalMachineData, advancedKeyword, searchStatus);
       });
 
       $('.open-advanced-search').click((e) => {

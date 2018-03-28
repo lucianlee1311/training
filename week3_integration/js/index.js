@@ -3,8 +3,8 @@ $(document).ready(() => {
   const tableApp = tableFunc($, Mustache);
 
   Promise.all([menuApp.service.getMenuTemplate(), menuApp.service.getMenuData()])
-    .then((values) => {
-      menuApp.utils.renderMenuData(values);
+    .then(([menuTemplate, data]) => {
+      menuApp.utils.renderMenuData(menuTemplate, data);
     })
     .then(() => {
       menuApp.utils.bindUI();

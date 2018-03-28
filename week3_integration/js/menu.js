@@ -26,7 +26,7 @@ const menuFunc = ($, Mustache) => {
       return menuData;
     },
 
-    renderMenuData: (([template, data]) => {
+    renderMenuData: ((template, data) => {
       const menuData = utils.processMenuData(data);
       const templateHtml = $(template).html();
       $('#menu-list-entry').html(Mustache.render(templateHtml, menuData));
@@ -39,7 +39,7 @@ const menuFunc = ($, Mustache) => {
 
       utils.clickMenu($panels, $menuItem, $menuSubItem);
       utils.clickSubMenu($panels, $menuItem, $menuSubItem);
-      utils.hoverMenu();
+      utils.hoverMenu($panels);
     }),
 
     clickMenu: ($panels, $menuItem, $menuSubItem) => $panels.click((e) => {
@@ -47,8 +47,9 @@ const menuFunc = ($, Mustache) => {
 
       const $self = $(e.currentTarget);
       $panels.filter((index, element) => {
-        const $node = $(element);
-        return $node.children('.menu-item').hasClass('active') === true && (!($self.children('.menu-item').hasClass('active')));
+        const isNodeActive = $(element).children('.menu-item').hasClass('active');
+        const isSelfActive = $self.children('.menu-item').hasClass('active');
+        return isNodeActive === true && (!isSelfActive);
       }).children('.panel-collapse').slideUp(200);
 
       $menuItem.removeClass('active');
@@ -77,7 +78,7 @@ const menuFunc = ($, Mustache) => {
       $self.addClass('active');
     }),
 
-    hoverMenu: () => $('.panel, .panel-collapse').hover((e) => {
+    hoverMenu: $panels => $panels.hover((e) => {
       const self = e.currentTarget;
       if ($('> .panel-collapse', self).length > 0) {
         $('> .panel-collapse', self).stop().slideDown();
