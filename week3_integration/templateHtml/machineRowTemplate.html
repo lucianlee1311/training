@@ -8,7 +8,7 @@
   <td class="region-text align-center">{{region}}</td>
   <td class="region-edit align-center hidden"><input type="text" name="inputRegion" class="input-region" value="{{region}}"></td>
   <td class="action-detail">
-    <div class="action-box">
+    <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
       <i class="row-example"></i>
       <!-- <i class="fa fa-list-alt fa-lg row-detail" data-toggle="modal" data-target="#detailMachineModal"></i> -->
       <!-- <i class="fa fa-list-alt fa-lg row-detail" data-toggle="modal" data-target="#machineModal"></i> -->
@@ -16,7 +16,7 @@
     </div>
   </td>
   <td class="action-setup">
-    <div class="action-box">
+    <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
       <i class="fa fa-pencil-square-o fa-lg row-edit"></i>
       <!-- <i class="fa fa-trash-o fa-lg row-remove" data-toggle="modal" data-target="#removeMachineModal"></i> -->
       <!-- <i class="fa fa-trash-o fa-lg row-remove" data-toggle="modal" data-target="#machineModal"></i> -->
@@ -25,7 +25,7 @@
     </div>
   </td>
   <td class="action-edit hidden">
-    <div class="action-box">
+    <div class="action-box {{#isDisabled}}disabled{{/isDisabled}}">
       <i class="row-example"></i>
       <i class="fa fa-close fa-lg row-close"></i>
       <i class="fa fa-check fa-lg row-check"></i>

@@ -50,6 +50,9 @@ class Machine {
     this.props.machinesEvent(this, 'detail');
   }
   clickEdit() {
+    if (this.template.find('.action-box').hasClass('disabled')) {
+      return;
+    }
     this.isShowEdit(true);
     this.props.machinesEvent(this, 'edit');
   }
@@ -101,6 +104,7 @@ class APP {
     this.modalTemplate = $('#machineModal');
     this.contentSearchTemplate = $('#contentSearch');
     this.contentPagingTemplate = $('#contentPaging');
+    this.disableIds = [];
     this.machines = this.machineFactory(template, json);
     this.cloneMachines = Object.assign([], this.machines);
     this.activeMachine = null;
@@ -111,6 +115,9 @@ class APP {
     const self = this;
     return json.map((data) => {
       const result = new Machine(template, data, self.machinesEvents.bind(self));
+      if (data.disable) {
+        this.disableIds.push(result.processData.id);
+      }
       return result;
     });
   }
@@ -154,7 +161,6 @@ class APP {
     this.contentSearchTemplate.find('.advanced-search-button').click(this.clickAdvancedSearch.bind(this));
     this.contentSearchTemplate.find('.advanced-open-button').click(this.clickAdvancedOpen.bind(this));
     this.contentSearchTemplate.find('.advanced-close-button').click(this.clickAdvancedClose.bind(this));
-
     this.contentSearchTemplate.find('.open-add-machine').click(this.clickOpenAddMachine.bind(this));
   }
   machinesEvents(activeMachine, eventType, params) {
@@ -193,7 +199,6 @@ class APP {
   }
   clickRemove(activeMachine) {
     this.activeMachine = activeMachine;
-
     this.modalTemplate.modal('show');
     this.modalTemplate.find('.modal-title').html('');
     this.modalTemplate.find('.modal-body').html('');
@@ -276,7 +281,7 @@ class APP {
       if (item.data.id !== activeMachine.data.id) {
         if (isDisabled) {
           item.template.find('.action-box').addClass('disabled');
-        } else {
+        } else if (this.disableIds.join().indexOf(item.processData.id.toString()) < 0) {
           item.template.find('.action-box').removeClass('disabled');
         }
       }
