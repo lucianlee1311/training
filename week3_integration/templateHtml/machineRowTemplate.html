@@ -1,0 +1,34 @@
+<tr data-machine-id="{{id}}">
+  <th scope="row"><div class="id-box-{{lowercaseStatus}}">{{id}}</div></th>
+  <td class="model-text align-center">{{model}}</td>
+  <td class="status-text align-center"><div class="status-box {{lowercaseStatus}}">{{status}}</div></td>
+  <td class="temperature-text align-center">{{temperature}}</td>
+  <td class="address-text">{{address}}</td>
+  <td class="address-edit hidden"><input type="text" name="inputAddress" class="input-address" value="{{address}}"></td>
+  <td class="region-text align-center">{{region}}</td>
+  <td class="region-edit align-center hidden"><input type="text" name="inputRegion" class="input-region" value="{{region}}"></td>
+  <td class="action-detail">
+    <div class="action-box">
+      <i class="row-example"></i>
+      <i class="fa fa-list-alt fa-lg row-detail" data-toggle="modal" data-target="#detailMachineModal"></i>
+      <!-- <i class="fa fa-list-alt fa-lg row-detail" data-toggle="modal" data-target="#machineModal"></i> -->
+      <!-- <i class="fa fa-list-alt fa-lg row-detail"></i> -->
+    </div>
+  </td>
+  <td class="action-setup">
+    <div class="action-box">
+      <i class="fa fa-pencil-square-o fa-lg row-edit"></i>
+      <i class="fa fa-trash-o fa-lg row-remove" data-toggle="modal" data-target="#removeMachineModal"></i>
+      <!-- <i class="fa fa-trash-o fa-lg row-remove" data-toggle="modal" data-target="#machineModal"></i> -->
+      <!-- <i class="fa fa-trash-o fa-lg row-remove"></i> -->
+      <i class="row-example"></i>
+    </div>
+  </td>
+  <td class="action-edit hidden">
+    <div class="action-box">
+      <i class="row-example"></i>
+      <i class="fa fa-close fa-lg row-close"></i>
+      <i class="fa fa-check fa-lg row-check"></i>
+    </div>
+  </td>
+</tr>

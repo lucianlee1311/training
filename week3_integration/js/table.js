@@ -134,8 +134,8 @@ const tableFunc = ($, Mustache) => {
     },
 
     switchAdvancedSearch: () => {
-      const openAdvancedSearch = $('.open-advanced-search');
-      const advancedSearch = $('.advanced-search');
+      const openAdvancedSearch = $('.advanced-open-button');
+      const advancedSearch = $('.advanced-search-region');
 
       if (advancedSearch.hasClass('hidden')) {
         openAdvancedSearch.children('i').addClass('dark');
@@ -440,7 +440,7 @@ const tableFunc = ($, Mustache) => {
         utils.advancedSearchData(tableTemplate, pagingInformationTemplate, originalMachineData, advancedKeyword, searchStatus);
       });
 
-      $('.open-advanced-search').click((e) => {
+      $('.advanced-open-button').click((e) => {
         e.stopImmediatePropagation();
 
         utils.switchAdvancedSearch();
@@ -450,6 +450,13 @@ const tableFunc = ($, Mustache) => {
         e.stopImmediatePropagation();
 
         utils.switchAdvancedSearch();
+      });
+
+      $('.open-add-machine').click((e) => {
+        // e.stopImmediatePropagation();
+
+        // $('#addMachineModal')
+        $('.modal-title').html('title');
       });
     },
 

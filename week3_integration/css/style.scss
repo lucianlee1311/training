@@ -249,13 +249,13 @@ body {
       border: 1px solid #D7D7D7;
       padding: 5px;
     }
-    .open-advanced-search {
+    .advanced-open-button {
       cursor: pointer;
     }
     .open-add-machine {
       cursor: pointer; 
     }
-    .advanced-search {
+    .advanced-search-region {
       position: absolute;
       z-index: 1;
       width: 535px;
@@ -335,7 +335,7 @@ body {
     background-color: #E8E8E8;
     box-sizing: border-box;
     padding: 0 20px;
-    height: 100%;
+    height: auto;
 
     thead {
       background: #343434;
