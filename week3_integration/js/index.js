@@ -25,9 +25,14 @@ $(document).ready(() => {
   //     console.log(error);
   //   });
 
-  Promise.all([fetch('./templateHtml/machineRowTemplate.html').then(res => res.text()), fetch('https://lucianjson.herokuapp.com/machine').then(res => res.json())])
-    .then(([tableTemplate, data]) => {
-      const machineApp = new APP(tableTemplate, data);
+  Promise.all([
+    fetch('./templateHtml/machineRowTemplate.html').then(res => res.text()), 
+    fetch('./templateHtml/addMachineModalContent.html').then(res => res.text()), 
+    fetch('./templateHtml/detailMachineModalContent.html').then(res => res.text()), 
+    fetch('./templateHtml/removeMachineModalContent.html').then(res => res.text()), 
+    fetch('https://lucianjson.herokuapp.com/machine').then(res => res.json())])
+    .then(([tableTemplate, addModalContent, detailModalContent, removeModalContent, data]) => {
+      const machineApp = new APP(tableTemplate, addModalContent, detailModalContent, removeModalContent, data);
       machineApp.renderPage();
     })
     .catch((error) => {

@@ -13,6 +13,7 @@ class Machine {
     const processData = this.processData(data);
     this.template = $(Mustache.render(template, processData));
     this.data = data;
+    this.processData = processData;
     this.props = { machinesEvent };
     this.bindEvent();
   }
@@ -91,12 +92,13 @@ class Machine {
 }
 
 class APP {
-  constructor(template, json) {
+  constructor(template, addModalContent, detailModalContent, removeModalContent, json) {
     this.template = template;
     this.json = json;
-    this.addModalTemplate = $('#addMachineModal');
-    this.detailModalTemplate = $('#detailMachineModal');
-    this.removeModalTemplate = $('#removeMachineModal');
+    this.addModalContent = addModalContent;
+    this.detailModalContent = detailModalContent;
+    this.removeModalContent = removeModalContent;
+    this.modalTemplate = $('#machineModal');
     this.contentSearchTemplate = $('#contentSearch');
     this.contentPagingTemplate = $('#contentPaging');
     this.machines = this.machineFactory(template, json);
@@ -141,18 +143,19 @@ class APP {
         const reMachines = machines.map(item => new Machine(self.template, item.data, self.machinesEvents.bind(self)));
         const start = (page - 1) * this.visibleContents;
         const end = start + this.visibleContents;
-        const pageMachines = reMachines.slice(start, end);
-        this.render(pageMachines);
+        this.machines = reMachines.slice(start, end);
+        this.render(this.machines);
       },
     });
   }
   bindEvent() {
-    this.removeModalTemplate.find('.remove-machine-button').click(this.clickModalRemove.bind(this));
-    this.addModalTemplate.find('.add-machine-button').click(this.clickModalAdd.bind(this));
+    this.modalTemplate.find('.machine-button').click(this.clickModalSubmit.bind(this));
     this.contentSearchTemplate.find('.search-button').click(this.clickSearch.bind(this));
     this.contentSearchTemplate.find('.advanced-search-button').click(this.clickAdvancedSearch.bind(this));
     this.contentSearchTemplate.find('.advanced-open-button').click(this.clickAdvancedOpen.bind(this));
     this.contentSearchTemplate.find('.advanced-close-button').click(this.clickAdvancedClose.bind(this));
+
+    this.contentSearchTemplate.find('.open-add-machine').click(this.clickOpenAddMachine.bind(this));
   }
   machinesEvents(activeMachine, eventType, params) {
     if (eventType === 'edit') {
@@ -168,6 +171,7 @@ class APP {
     }
   }
   clickOpenAddMachine() {
+    this.modalTemplate.modal('show');
     this.modalTemplate.find('.modal-title').html('');
     this.modalTemplate.find('.modal-body').html('');
     this.modalTemplate.find('.modal-title').append('Add Machine');
@@ -189,32 +193,49 @@ class APP {
   }
   clickRemove(activeMachine) {
     this.activeMachine = activeMachine;
+
+    this.modalTemplate.modal('show');
+    this.modalTemplate.find('.modal-title').html('');
+    this.modalTemplate.find('.modal-body').html('');
+    this.modalTemplate.find('.modal-title').append('Remove Machine');
+    this.modalTemplate.find('.modal-body').append(this.removeModalContent);
+    this.modalTemplate.find('.machine-button').data('machind-type', 'remove');
+    this.modalTemplate.find('.machine-button').show();
   }
   clickDetail(activeMachine) {
-    this.detailModalTemplate.find('input[name=editDeviceId]').val(activeMachine.data.id);
-    this.detailModalTemplate.find('input[name=editModel]').val(activeMachine.data.model);
-    this.detailModalTemplate.find('input[name=editStatus]').val(activeMachine.data.status);
-    this.detailModalTemplate.find('input[name=editTemperature]').val(activeMachine.data.temperature);
-    this.detailModalTemplate.find('input[name=editAddress]').val(activeMachine.data.address);
-    this.detailModalTemplate.find('input[name=editRegion]').val(activeMachine.data.region);
+    this.modalTemplate.modal('show');
+    this.modalTemplate.find('.modal-title').html('');
+    this.modalTemplate.find('.modal-body').html('');
+    this.modalTemplate.find('.modal-title').append('Detail Machine');
+    this.modalTemplate.find('.modal-body').append(this.detailModalContent);
+    this.modalTemplate.find('.machine-button').hide();
+
+    this.modalTemplate.find('input[name=editDeviceId]').val(activeMachine.processData.id);
+    this.modalTemplate.find('input[name=editModel]').val(activeMachine.data.model);
+    this.modalTemplate.find('input[name=editStatus]').val(activeMachine.processData.status);
+    this.modalTemplate.find('input[name=editTemperature]').val(activeMachine.processData.temperature);
+    this.modalTemplate.find('input[name=editAddress]').val(activeMachine.data.address);
+    this.modalTemplate.find('input[name=editRegion]').val(activeMachine.data.region);
   }
-  clickModalRemove() {
-    this.cloneMachines = this.cloneMachines.filter(targetMachine => this.activeMachine.data.id !== targetMachine.data.id);
-    this.activeMachine.doRemove();
-    this.renderPage(this.cloneMachines);
-  }
-  clickModalAdd() {
-    const data = {
-      id: (this.machines.length + 1),
-      model: this.addModalTemplate.find('input[name=addModel]').val(),
-      status: this.addModalTemplate.find('select[name=addStatus]').val(),
-      temperature: this.addModalTemplate.find('input[name=addTemperature]').val(),
-      address: this.addModalTemplate.find('input[name=addAddress]').val(),
-      region: this.addModalTemplate.find('input[name=addRegion]').val(),
-    };
-    const result = new Machine(this.template, data, this.machinesEvents.bind(this));
-    this.cloneMachines.push(result);
-    this.renderPage(this.cloneMachines);
+  clickModalSubmit() {
+    const eventType = this.modalTemplate.find('.machine-button').data('machind-type');
+    if (eventType === 'add') {
+      const data = {
+        id: (this.cloneMachines.length + 1),
+        model: this.modalTemplate.find('input[name=addModel]').val(),
+        status: this.modalTemplate.find('select[name=addStatus]').val(),
+        temperature: this.modalTemplate.find('input[name=addTemperature]').val(),
+        address: this.modalTemplate.find('input[name=addAddress]').val(),
+        region: this.modalTemplate.find('input[name=addRegion]').val(),
+      };
+      const result = new Machine(this.template, data, this.machinesEvents.bind(this));
+      this.cloneMachines.push(result);
+      this.renderPage(this.cloneMachines);
+    } else if (eventType === 'remove') {
+      this.cloneMachines = this.cloneMachines.filter(targetMachine => this.activeMachine.data.id !== targetMachine.data.id);
+      this.activeMachine.doRemove();
+      this.renderPage(this.cloneMachines);
+    }
   }
   clickSearch() {
     const keyword = this.contentSearchTemplate.find('input[name=searchKeyword]').val();
