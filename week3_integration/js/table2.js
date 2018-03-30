@@ -166,7 +166,6 @@ class APP {
     }
   }
   clickOpenAddMachine() {
-    // this.modalTemplate.modal('show');
     this.modalTemplate.find('.modal-title').html('');
     this.modalTemplate.find('.modal-body').html('');
     this.modalTemplate.find('.modal-title').append('Add Machine');
@@ -212,7 +211,7 @@ class APP {
       region: this.addModalTemplate.find('input[name=addRegion]').val(),
     };
     const result = new Machine(this.template, data, this.machinesEvents.bind(this));
-    this.machines.push(result);
+    this.cloneMachines.push(result);
     this.renderPage(this.cloneMachines);
   }
   clickSearch() {
