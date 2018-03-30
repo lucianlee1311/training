@@ -112,9 +112,9 @@ class APP {
       return result;
     });
   }
-  render() {
+  render(machines) {
     const $fragement = $(document.createDocumentFragment());
-    this.machines.forEach((element) => {
+    machines.forEach((element) => {
       $fragement.append(element.template);
     });
     $('#machine-row-template-entry').html('');
@@ -122,6 +122,7 @@ class APP {
     this.bindEvent();
   }
   renderPage(machines) {
+    const self = this;
     if (machines === undefined) {
       machines = this.cloneMachines;
     }
@@ -137,10 +138,11 @@ class APP {
       next: '<i class="fa fa-angle-right"></i>',
       last: '<i class="fa fa-angle-double-right"></i>',
       onPageClick: (event, page) => {
+        const reMachines = machines.map(item => new Machine(self.template, item.data, self.machinesEvents.bind(self)));
         const start = (page - 1) * this.visibleContents;
         const end = start + this.visibleContents;
-        this.machines = machines.slice(start, end);
-        this.render();
+        const pageMachines = reMachines.slice(start, end);
+        this.render(pageMachines);
       },
     });
   }
@@ -181,7 +183,7 @@ class APP {
   }
   clickCheck(activeMachine, params) {
     this.isEditDisabled(activeMachine, false);
-    const machine = this.machines.find(item => item.data.id === activeMachine.data.id);
+    const machine = this.cloneMachines.find(item => item.data.id === activeMachine.data.id);
     machine.data.address = params.newAddress;
     machine.data.region = params.newRegion;
   }
@@ -222,6 +224,8 @@ class APP {
         const isAddress = item.data.address.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
         return (isModel || isAddress);
       });
+    } else {
+      this.machines = this.cloneMachines;
     }
     this.renderPage(this.machines);
   }
