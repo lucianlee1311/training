@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest --coverage"
+    "test": "jest --coverage test/table2.test.js"
   },
   "keywords": [],
   "author": "",

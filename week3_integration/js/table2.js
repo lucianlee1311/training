@@ -244,7 +244,7 @@ class APP {
   }
   clickSearch() {
     const keyword = this.contentSearchTemplate.find('input[name=searchKeyword]').val();
-    if (keyword !== '') {
+    if (keyword !== '' && keyword !== undefined) {
       this.machines = this.cloneMachines.filter((item) => {
         const isModel = item.data.model.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
         const isAddress = item.data.address.toLowerCase().indexOf(keyword.toLowerCase()) > -1;
@@ -298,4 +298,8 @@ class APP {
       openButton.children('i').removeClass('dark');
     }
   }
+}
+
+if (typeof module !== 'undefined' && typeof require !== 'undefined') {
+  module.exports = { APP, Machine };
 }
