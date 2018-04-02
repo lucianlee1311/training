@@ -8,6 +8,38 @@ const temperatureUnit = {
   f: `${String.fromCharCode(176)}F`,
 };
 
+const service = { 
+  addMachineData: machineData => new Promise((resolve, reject) => {
+    fetch('https://lucianjson.herokuapp.com/machine', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: machineData,
+    })
+      .then(res => res.json())
+      .then(resolve)
+      .catch(reject);
+  }),
+  updateMachineData: (machineData, id) => new Promise((resolve, reject) => {
+    fetch(`https://lucianjson.herokuapp.com/machine/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: machineData,
+    })
+      .then(res => res.json())
+      .then(resolve)
+      .catch(reject);
+  }),
+  removeMachineData: id => new Promise((resolve, reject) => {
+    fetch(`https://lucianjson.herokuapp.com/machine/${id}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then(res => res.json())
+      .then(resolve)
+      .catch(reject);
+  }),
+}
+
 class Machine {
   constructor(template, data, machinesEvent) {
     const processData = this.processData(data);
@@ -38,7 +70,7 @@ class Machine {
     return processData;
   }
   paddingZeroLeft(str, lenght) {
-    if (str.toString().length >= lenght) {
+    if (str !== undefined && str.toString().length >= lenght) {
       return str;
     }
     return this.paddingZeroLeft(`0${str}`, lenght);
@@ -110,6 +142,7 @@ class APP {
     this.activeMachine = null;
     this.visiblePages = 5;
     this.visibleContents = 5;
+    this.bindEvent();
   }
   machineFactory(template, json) {
     const self = this;
@@ -123,12 +156,19 @@ class APP {
   }
   render(machines) {
     const $fragement = $(document.createDocumentFragment());
-    machines.forEach((element) => {
-      $fragement.append(element.template);
-    });
-    $('#machine-row-template-entry').html('');
-    $('#machine-row-template-entry').append($fragement);
-    this.bindEvent();
+    if(machines.length > 0) {
+      machines.forEach((element) => {
+        $fragement.append(element.template);
+      });
+      $('#machine-row-template-entry').html('');
+      $('#machine-row-template-entry').append($fragement);
+    }
+    else {
+      $fragement.append('<tr><td colspan="8" class="align-center">no data.</td></tr>');
+      $('#machine-row-template-entry').html('');
+      $('#machine-row-template-entry').append($fragement);
+    }
+    // this.bindEvent();
   }
   renderPage(machines) {
     const self = this;
@@ -138,6 +178,10 @@ class APP {
     this.contentPagingTemplate.find('.paging-information').text(`${machines.length} Models`);
     if ($('#pagination-entry').data('twbs-pagination')) {
       $('#pagination-entry').twbsPagination('destroy');
+    }
+    if (machines === null || machines.length <= 0) {
+      this.render(machines);
+      return;
     }
     $('#pagination-entry').twbsPagination({
       totalPages: Math.ceil(machines.length / this.visibleContents),
@@ -156,6 +200,7 @@ class APP {
     });
   }
   bindEvent() {
+    console.log('bindEvent()');
     this.modalTemplate.find('.machine-button').click(this.clickModalSubmit.bind(this));
     this.contentSearchTemplate.find('.search-button').click(this.clickSearch.bind(this));
     this.contentSearchTemplate.find('.advanced-search-button').click(this.clickAdvancedSearch.bind(this));
@@ -193,9 +238,7 @@ class APP {
   }
   clickCheck(activeMachine, params) {
     this.isEditDisabled(activeMachine, false);
-    const machine = this.cloneMachines.find(item => item.data.id === activeMachine.data.id);
-    machine.data.address = params.newAddress;
-    machine.data.region = params.newRegion;
+    this.updateMahcine(activeMachine, params);
   }
   clickRemove(activeMachine) {
     this.activeMachine = activeMachine;
@@ -222,24 +265,60 @@ class APP {
     this.modalTemplate.find('input[name=editAddress]').val(activeMachine.data.address);
     this.modalTemplate.find('input[name=editRegion]').val(activeMachine.data.region);
   }
+  updateMahcine(activeMachine, params) {
+    const machine = this.cloneMachines.find(item => item.data.id === activeMachine.data.id);
+    machine.data.address = params.newAddress;
+    machine.data.region = params.newRegion;
+
+    const updateId = activeMachine.data.id;
+    service.updateMachineData(JSON.stringify(machine.data), updateId)
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  addMachine() {
+    const self = this;
+    const newId = this.cloneMachines[this.cloneMachines.length - 1].data.id + 1;
+    const data = {
+      id: newId,
+      model: this.modalTemplate.find('input[name=addModel]').val(),
+      status: parseInt(this.modalTemplate.find('select[name=addStatus]').val(), 10),
+      temperature: parseInt(this.modalTemplate.find('input[name=addTemperature]').val(), 10),
+      address: this.modalTemplate.find('input[name=addAddress]').val(),
+      region: this.modalTemplate.find('input[name=addRegion]').val(),
+      disable: false,
+    };
+    const newMachine = new Machine(this.template, data, this.machinesEvents.bind(this));
+
+    service.addMachineData(JSON.stringify(newMachine.data))
+      .then(() => {
+        self.cloneMachines.push(newMachine);
+        self.renderPage(self.cloneMachines);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  removeMachine() {
+    const removeId = this.activeMachine.data.id;
+    service.removeMachineData(removeId)
+      .then(() => {
+        this.cloneMachines = this.cloneMachines.filter(targetMachine => removeId !== targetMachine.data.id);
+        this.activeMachine.doRemove();
+        this.renderPage(this.cloneMachines);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   clickModalSubmit() {
+    console.log('clickModalSubmit()');
+
     const eventType = this.modalTemplate.find('.machine-button').data('machind-type');
     if (eventType === 'add') {
-      const data = {
-        id: (this.cloneMachines.length + 1),
-        model: this.modalTemplate.find('input[name=addModel]').val(),
-        status: this.modalTemplate.find('select[name=addStatus]').val(),
-        temperature: this.modalTemplate.find('input[name=addTemperature]').val(),
-        address: this.modalTemplate.find('input[name=addAddress]').val(),
-        region: this.modalTemplate.find('input[name=addRegion]').val(),
-      };
-      const result = new Machine(this.template, data, this.machinesEvents.bind(this));
-      this.cloneMachines.push(result);
-      this.renderPage(this.cloneMachines);
+      this.addMachine();
     } else if (eventType === 'remove') {
-      this.cloneMachines = this.cloneMachines.filter(targetMachine => this.activeMachine.data.id !== targetMachine.data.id);
-      this.activeMachine.doRemove();
-      this.renderPage(this.cloneMachines);
+      this.removeMachine();
     }
   }
   clickSearch() {
