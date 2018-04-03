@@ -10,7 +10,7 @@ class App extends Component {
   }
   componentDidMount() {
     const list = Array.from(Array(10), (val,index) => { 
-      return {id: index+1, current: index+1}
+      return {id: index+1, current: index+1};
     });
     this.setState({list});
   }
@@ -19,9 +19,7 @@ class App extends Component {
     this.setState({current});
   }
   onClickProfile = (data) => {
-    const dataIndex = this.state.list.findIndex((item) => {
-      return item.id === data.id;
-    });
+    const dataIndex = this.state.list.findIndex(item => item.id === data.id);
     const list = this.state.list.slice();
     list[dataIndex].current += 1;
     this.setState({list});
