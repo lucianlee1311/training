@@ -15,18 +15,13 @@ class App extends Component {
     this.setState({ currentGroupType });
   }
   onClickClearCompleted = () => {
-    const todoList = this.state.todoList.filter(item => item.todoGroup !== groupType.completed);
+    const todoList = this.state.todoList.filter(item => item.todoIsCompleted === false);
     this.setState({ todoList });
   }
   onClickTodoItemCheckBox = (targetTodoId) => {
     const targetIndex = this.state.todoList.findIndex(item => item.todoId === targetTodoId);
-    let todoGroup;
-    if (this.state.todoList[targetIndex].todoGroup !== groupType.completed) {
-      todoGroup = groupType.completed;
-    } else if (this.state.todoList[targetIndex].todoGroup !== groupType.active) {
-      todoGroup = groupType.active;
-    }
-    this.state.todoList[targetIndex] = {...this.state.todoList[targetIndex], todoGroup: todoGroup };
+    const todoIsCompleted = !(this.state.todoList[targetIndex].todoIsCompleted);
+    this.state.todoList[targetIndex] = {...this.state.todoList[targetIndex], todoIsCompleted };
     this.setState({ todoList: [...this.state.todoList] });
   }
   onClickTodoItemRemove = (targetTodoId) => {
@@ -43,8 +38,7 @@ class App extends Component {
     }
     const todoId = Math.random();
     let todoText = this.state.todoText;
-    const todoGroup = groupType.active;
-    const item = { todoId, todoText, todoGroup };
+    const item = { todoId, todoText, todoIsCompleted: false };
     todoText = "";
     const todoList = this.state.todoList;
     this.setState({ todoText, todoList: [...todoList, item] });
@@ -52,10 +46,12 @@ class App extends Component {
   render() {
     const todoItem = this.state.todoList
       .filter((item) => {
-        if (this.state.currentGroupType === groupType.all) {
-          return true;
+        if (this.state.currentGroupType === groupType.active) {
+          return item.todoIsCompleted === false;
+        } else if (this.state.currentGroupType === groupType.completed) {
+          return item.todoIsCompleted === true;
         }
-        return item.todoGroup === this.state.currentGroupType;
+        return true;
       })
       .map(item => (<TodoItem key={item.todoId} 
         data={item} 

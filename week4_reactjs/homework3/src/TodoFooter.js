@@ -22,10 +22,12 @@ class TodoFooter extends React.Component {
     const isAll = currentGroupType === groupType.all;
     const isActive = currentGroupType === groupType.active;
     const isCompleted = currentGroupType === groupType.completed;
-    const hasCompletedItem = todoList.filter(item => item.todoGroup === groupType.completed).length > 0 ? true : false;
+    const hasCompletedItem = todoList.filter(item => item.todoIsCompleted === true).length > 0 ? true : false;
     let listLength = todoList.length;
-    if (!isAll) {
-      listLength = todoList.filter(item => item.todoGroup === currentGroupType).length;
+    if (isActive) {
+      listLength = todoList.filter(item => item.todoIsCompleted === false).length;
+    } else if (isCompleted) {
+      listLength = todoList.filter(item => item.todoIsCompleted === true).length;
     }
 
     return (

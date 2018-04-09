@@ -5,10 +5,10 @@ import groupType from './groupType.js';
 
 class TodoItem extends React.Component {
   static propTypes = {
-    data: PropTypes.shape({ 
+    data: PropTypes.shape({
       todoId: PropTypes.number, 
       todoText: PropTypes.string, 
-      todoGroup: PropTypes.number,
+      todoIsCompleted: PropTypes.boolean,
     }),
     onClickTodoItemCheckBox: PropTypes.func,
     onClickTodoItemRemove: PropTypes.func,
@@ -25,7 +25,7 @@ class TodoItem extends React.Component {
         <input 
          type="checkbox" 
          onClick={this.handleCheckbox} 
-         defaultChecked={this.props.data.todoGroup === groupType.completed}
+         defaultChecked={this.props.data.todoIsCompleted === true}
         />
         <div className="todo-text-group">
           <span>{this.props.data.todoText}</span>
