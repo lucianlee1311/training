@@ -8,7 +8,7 @@ const temperatureUnit = {
   f: `${String.fromCharCode(176)}F`,
 };
 
-const service = { 
+const service = {
   addMachineData: machineData => new Promise((resolve, reject) => {
     fetch('https://lucianjson.herokuapp.com/machine', {
       method: 'POST',
@@ -38,7 +38,7 @@ const service = {
       .then(resolve)
       .catch(reject);
   }),
-}
+};
 
 class Machine {
   constructor(template, data, machinesEvent) {
@@ -155,20 +155,21 @@ class APP {
     });
   }
   render(machines) {
+    if (machines === undefined) {
+      machines = this.cloneMachines;
+    }
     const $fragement = $(document.createDocumentFragment());
-    if(machines.length > 0) {
+    if (machines.length > 0) {
       machines.forEach((element) => {
         $fragement.append(element.template);
       });
       $('#machine-row-template-entry').html('');
       $('#machine-row-template-entry').append($fragement);
-    }
-    else {
+    } else {
       $fragement.append('<tr><td colspan="8" class="align-center">no data.</td></tr>');
       $('#machine-row-template-entry').html('');
       $('#machine-row-template-entry').append($fragement);
     }
-    // this.bindEvent();
   }
   renderPage(machines) {
     const self = this;
@@ -200,7 +201,6 @@ class APP {
     });
   }
   bindEvent() {
-    console.log('bindEvent()');
     this.modalTemplate.find('.machine-button').click(this.clickModalSubmit.bind(this));
     this.contentSearchTemplate.find('.search-button').click(this.clickSearch.bind(this));
     this.contentSearchTemplate.find('.advanced-search-button').click(this.clickAdvancedSearch.bind(this));
