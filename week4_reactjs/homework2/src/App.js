@@ -5,19 +5,10 @@ import Profile from './Profile.js';
 
 class App extends Component {
   state = {
-    current: 0
-  }
-  handleClick() {
-    let number = this.state.current;
-    const current = number += 1;
-    this.setState({current});
-  }
-  onClickProfile = (number) => {
-    const current = number -= 1;
-    this.setState({current});
+    current: 0,
   }
 
-  //-----lifecycle start-----
+  // -----lifecycle start-----
   // componentWillMount() {
   //   console.log('component Will Mount');
   // }
@@ -25,20 +16,20 @@ class App extends Component {
     console.log('component Did Mount');
 
     this.input.focus();
-    
+
     fetch('https://lucianjson.herokuapp.com/machine')
-    .then(res => res.json())
-    .then((data) => {
-      const current = data.length;
-      this.setState({current});
-    });
+      .then(res => res.json())
+      .then((data) => {
+        const current = data.length;
+        this.setState({ current });
+      });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     console.log('should Component Update');
     // console.log('nextProps', nextProps);
     // console.log('nextState', nextState);
-    return nextState.current !== this.state.current; //true;
+    return nextState.current !== this.state.current; // true;
   }
   // componentWillUpdate(nextProps, nextState) {
   //   console.log('should Will Update');
@@ -54,7 +45,18 @@ class App extends Component {
   componentWillUnmount() {
     console.log('component Will Unmount');
   }
-  //-----lifecycle end-----
+  // -----lifecycle end-----
+
+  onClickProfile = (number) => {
+    const current = number - 1;
+    this.setState({ current });
+  }
+
+  handleClick() {
+    const number = this.state.current;
+    const current = number + 1;
+    this.setState({ current });
+  }
 
   render() {
     console.log('render');
@@ -69,7 +71,7 @@ class App extends Component {
         </p>
 
         <div>
-          <input ref={(item) => this.input = item}/>
+          <input ref={item => this.input = item} />
           <div><Profile number={this.state.current} onClickProfile={this.onClickProfile} /></div>
           <p>{(this.state.current)}</p>
           <button onClick={this.handleClick.bind(this)}>
