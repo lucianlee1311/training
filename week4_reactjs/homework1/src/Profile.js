@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 class Profile extends React.Component {
   static propTypes = {
     number: PropTypes.number.isRequired,
-    data: PropTypes.shape({id: PropTypes.number, current: PropTypes.number}),
+    data: PropTypes.shape({
+      id: PropTypes.number,
+      current: PropTypes.number,
+    }),
     onClickProfile: PropTypes.func
   }
   clickProfile = () => {
