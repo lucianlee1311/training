@@ -1,0 +1,38 @@
+.todo-footer {
+  width: 500px;
+  height: 60px;
+  box-sizing: border-box;
+  padding: 15px;
+  border: 1px solid #999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todo-default-group {
+  width: 300px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.todo-type-group {
+  width: 160px;
+}
+
+.todo-type-group button {
+  border: none;
+  background: rgba(0, 0, 0, 0.003);
+}
+
+.todo-type-group button:focus {
+  outline: 0;
+}
+
+.todo-type-group .footer-selected {
+  border: 1px solid #999;
+}
+
+.todo-footer .footer-item-hide {
+  display: none;
+  visibility: hidden;
+}

@@ -1,0 +1,18 @@
+.todo-item {
+  width: 500px;
+  height: 60px;
+  box-sizing: border-box;
+  padding: 15px;
+  border-top: 1px solid #999;
+  border-left: 1px solid #999;
+  border-right: 1px solid #999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todo-text-group {
+  width: 440px;
+  display: flex;
+  justify-content: space-between;
+}
