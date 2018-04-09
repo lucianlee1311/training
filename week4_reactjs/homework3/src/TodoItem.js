@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './TodoItem.css';
+import groupType from './groupType.js';
 
 class TodoItem extends React.Component {
   static propTypes = {
@@ -13,10 +14,10 @@ class TodoItem extends React.Component {
     onClickTodoItemRemove: PropTypes.func,
   }
   handleCheckbox = () => {
-    this.props.onClickTodoItemCheckBox(this.props.data);
+    this.props.onClickTodoItemCheckBox(this.props.data.todoId);
   }
   handleRemove = () => {
-    this.props.onClickTodoItemRemove(this.props.data);
+    this.props.onClickTodoItemRemove(this.props.data.todoId);
   }
   render() {
     return (
@@ -24,7 +25,7 @@ class TodoItem extends React.Component {
         <input 
          type="checkbox" 
          onClick={this.handleCheckbox} 
-         defaultChecked={this.props.data.todoGroup === this.props.groupType.completed}
+         defaultChecked={this.props.data.todoGroup === groupType.completed}
         />
         <div className="todo-text-group">
           <span>{this.props.data.todoText}</span>
