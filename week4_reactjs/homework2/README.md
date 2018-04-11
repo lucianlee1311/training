@@ -1,8 +1,11 @@
 生命週期 
+render()
 componentDidMount()
 
-shouldComponentUpdate()
+shouldComponentUpdate() return Yes/No
+render()
 componentDidUpdate()
+
 componentWillUnmount()
 
 -------------------------------------------------------------

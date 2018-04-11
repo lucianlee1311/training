@@ -11,6 +11,7 @@ class Profile extends React.Component {
     onClickProfile: PropTypes.func
   }
   clickProfile = () => {
+    console.log('this.props.data', this.props.data);
     this.props.onClickProfile(this.props.data);
   }
   render() {

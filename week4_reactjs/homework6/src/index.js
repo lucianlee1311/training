@@ -1,28 +1,18 @@
-import _ from 'lodash';
-import './style.css';
-import Icon from './green.png';
-import printMe from './print.js';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Home from './containers/Home/index';
+import Books from './containers/Books/index';
+import BookDetail from './containers/Books/bookDetail';
+import { BrowserRouter, HashRouter, Switch, Route } from 'react-router-dom';
 
-function component() {
-  const element = document.createElement('div');
-  const btn = document.createElement('button');
+ReactDOM.render((
+  <HashRouter>
+    <Switch>
+      <Route exact path="/" component={Home} />
+      <Route path="/books" component={Books} />
+      <Route path="/book/:id" component={BookDetail} />
+    </Switch>
+  </HashRouter>
+), document.getElementById('root'));
 
-  // Lodash, now imported by this script
-  element.innerHTML = _.join(['Hello', 'webpack'], ' ');
-  element.classList.add('hello');
-  
-  btn.innerHTML = 'Click me and check the console!';
-  btn.onclick = printMe;
-  element.appendChild(btn);
-
-  // Add the image to our existing div.
-  const myIcon = new Image();
-  myIcon.src = Icon;
-  element.appendChild(myIcon);
-  
-  return element;
-}
-
-document.body.appendChild(component());
-
-module.hot.accept();
+// module.hot.accept();
