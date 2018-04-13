@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "model": "AK1",
+    "status": 2,
+    "temperature": 4,
+    "address": "台北市大安區大安里新生南路二段新生段1號21樓(大安森林公園 - 西側)",
+    "region": "大安區",
+    "disable": false
+  },
+  {
+    "id": 2,
+    "model": "AK2",
+    "status": 0,
+    "temperature": 0,
+    "address": "台北市大安區大安里新生南路二段新生段1號21樓(大安森林公園 - 南側)",
+    "region": "大安區",
+    "disable": false
+  },
+  {
+    "id": 3,
+    "model": "AK3",
+    "status": 1,
+    "temperature": 5.3,
+    "address": "台北市大安區大安里新生南路二段新生段1號21樓(大安森林公園 - 東側)",
+    "region": "大安區",
+    "disable": false
+  }
+]
