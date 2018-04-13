@@ -2,17 +2,21 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import '../../style.scss';
+import './machine.scss';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Col, Input, FormText } from 'reactstrap';
+import classNames from 'classnames';
 
 class Machine extends Component {
   static propTypes = {
     data: PropTypes.object,
-    onMachineUpdate: PropTypes.func
+    onMachineUpdate: PropTypes.func,
+    onMachineDelete: PropTypes.func,
+    onMachineEdit: PropTypes.func,
+    onMachineCancel: PropTypes.func,
   }
   state = {
     modal: false,
-    shown: true,
     address: "",
     region: ""
   }
@@ -26,14 +30,14 @@ class Machine extends Component {
     this.setState({ region: event.target.value });
   }
   handleEdit = () => {
-    this.setState({ shown: !this.state.shown });
+    this.props.onMachineEdit(this.props.data.id);
   }
   handleDelete = () => {
     this.props.onMachineDelete(this.props.data.id);
   }
   handleCancel = () => {
+    this.props.onMachineCancel();
     this.setState({
-      shown: !this.state.shown, 
       address: this.props.data.address, 
       region: this.props.data.region 
     });
@@ -43,7 +47,6 @@ class Machine extends Component {
     const region = this.state.region === "" ? this.props.data.region : this.state.region;
     const editRow = { address, region };
     this.props.onMachineUpdate(this.props.data.id, editRow);
-    this.setState({ shown: !this.state.shown });
   }
   handleToggleModal = () => {
     this.setState({ modal: !this.state.modal });
@@ -51,12 +54,21 @@ class Machine extends Component {
   render() {
     const address = this.state.address === "" ? this.props.data.address : this.state.address;
     const region = this.state.region === "" ? this.props.data.region : this.state.region;
-		const shown = {
-			display: this.state.shown ? "inline-block" : "none"
-		};
-		const hidden = {
-			display: this.state.shown ? "none" : "inline-block"
-    };
+
+    let classShown; 
+    let classHidden; 
+    if (this.props.data.isEdit) {
+      if (this.props.data.isDisabled) {
+        classShown = 'edit-active-shown';
+        classHidden = 'edit-active-hidden';
+      } else {
+        classShown = 'edit-active-hidden';
+        classHidden = 'edit-active-shown';
+      }
+    } else {
+      classShown = 'edit-active-shown';
+      classHidden = 'edit-active-hidden';
+    }
     
     return (
       <tr>
@@ -65,26 +77,27 @@ class Machine extends Component {
         <td>{ this.props.data.status }</td>
         <td>{ this.props.data.temperature }</td>
         <td>
-          <span style={ shown }>{ this.props.data.address }</span>
-          <input style={ hidden }
+          <span className={ classShown }>{ this.props.data.address }</span>
+          <input className={ classHidden }
             onChange={ this.handleAddressChange }
             value={ address }/>
         </td>
         <td>
-          <span style={ shown }>{ this.props.data.region }</span>
-          <input style={ hidden }
+          <span className={ classShown }>{ this.props.data.region }</span>
+          <input className={ classHidden }
             onChange={ this.handleRegionChange }
             value={ region }/>
         </td>
         <td>
-          <button style={ shown } onClick={ this.handleToggleModal }>detail</button>
+          <button disabled={this.props.data.isDisabled} className={ classShown } onClick={ this.handleToggleModal }>detail</button>
         </td>
         <td>
-          <button style={ shown } onClick={ this.handleEdit }>edit</button>
-          <button style={ shown } onClick={ this.handleDelete }>remove</button>
-          <button style={ hidden } onClick={ this.handleCancel }>cancel</button>
-          <button style={ hidden } onClick={ this.handleCheck }>check</button>
+          <button disabled={this.props.data.isDisabled} className={ classShown } onClick={ this.handleEdit }>edit</button>
+          <button disabled={this.props.data.isDisabled} className={ classShown } onClick={ this.handleDelete }>remove</button>
+          <button className={ classHidden } onClick={ this.handleCancel }>cancel</button>
+          <button className={ classHidden } onClick={ this.handleCheck }>check</button>
         </td>
+
         <Modal isOpen={ this.state.modal } toggle={ this.handleToggleModal } size="lg" >
           <ModalHeader>Modal title</ModalHeader>
           <ModalBody>

@@ -11,30 +11,52 @@ class MachineTable extends Component {
   }
   componentDidMount() {
     const machines = Object.assign([], MachineData);
-    this.setState({machines});
+    this.setState({ machines });
   }
-  handleMachineUpdate = (id, editRow) => {
-    const machines = this.state.machines
-      .map(item => {
-        if(item.id === id) {
-          item.address = editRow.address;
-          item.region = editRow.region;
-        }
-        return item;
-      });
-    this.setState({machines});
+  handleMachineEdit = (id) => {
+    this.state.machines.forEach(item => {
+      if (item.id === id) {
+        item.isDisabled = false;
+      } else {
+        item.isDisabled = true;
+      }
+      item.isEdit = true;
+    });
+    this.setState({ machines: this.state.machines });
   }
   handleMachineDelete = (id) => {
     const machines = this.state.machines.filter(item => item.id !== id);
-    this.setState({machines});
+    this.setState({ machines });
   }
+  handleMachineCancel = () => {
+    this.state.machines.forEach(item => {
+      item.isDisabled = false;
+      item.isEdit = false;
+    });
+    this.setState({ machines: this.state.machines });
+  }
+  handleMachineUpdate = (id, editRow) => {
+    const machines = this.state.machines.map(item => {
+      if(item.id === id) {
+        item.address = editRow.address;
+        item.region = editRow.region;
+      }
+      item.isDisabled = false;
+      item.isEdit = false;
+      return item;
+    });
+    this.setState({ machines });
+  }
+
   render() {
     const machine = this.state.machines.map(item => 
      <Machine 
-      key={Math.random()} 
-      data={item}
-      onMachineUpdate={this.handleMachineUpdate} 
-      onMachineDelete={this.handleMachineDelete} />);
+      key={ Math.random() } 
+      data={ item }
+      onMachineUpdate={ this.handleMachineUpdate } 
+      onMachineDelete={ this.handleMachineDelete }
+      onMachineEdit={ this.handleMachineEdit }
+      onMachineCancel={ this.handleMachineCancel } />);
 
     return (
       <div>
@@ -52,7 +74,7 @@ class MachineTable extends Component {
             </tr>
           </thead>
           <tbody>
-            {machine}
+            { machine }
           </tbody>
         </table>
       </div>

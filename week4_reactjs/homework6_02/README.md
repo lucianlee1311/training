@@ -1,2 +1,2 @@
 
-- my webpack4 sample
+- practice integration by react
