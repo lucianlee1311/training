@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import '../../style.scss';
 import MachineData from '../../machineData.json'
 import Machine from '../Machine/machine';
-import 'bootstrap/dist/css/bootstrap.css';
 
 class MachineTable extends Component {
   state = {
