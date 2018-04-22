@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 
 import App from './containers/index';
+import AppBookDetail from './containers/indexBookDetail';
 import { BrowserRouter, HashRouter, Switch, Route } from 'react-router-dom';
 import reducerApp from './reducers';
 // import thunk from 'redux-thunk';
@@ -20,18 +21,18 @@ const store = createStore(reducerApp, composeEnhancers(
 // store.dispatch(getAllProducts());
 
 ReactDOM.render((
-  <Provider store={store}>
-    <App />
-  </Provider>
   // <Provider store={store}>
-  //   <HashRouter>
-  //     <Switch>
-  //       <Route exact path="/" component={Home} />
-  //       <Route path="/books" component={App} />
-  //       <Route path="/books" component={BooksContainer} />
-  //     </Switch>
-  //   </HashRouter>
+  //   <App />
   // </Provider>
+  <Provider store={store}>
+    <HashRouter>
+      <Switch>
+        <Route exact path="/" component={App} />
+        <Route path="/book/:id" component={AppBookDetail} />
+        {/* <Route path="/books" component={BooksContainer} /> */}
+      </Switch>
+    </HashRouter>
+  </Provider>
 ), document.getElementById('root'));
 
 // ReactDOM.render((

@@ -1,27 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-// import { CartList } from '../components';
 import { Cart } from '../components';
+import { deleteFromCart } from '../actions';
 
 class CartContainer extends Component {
+  handleDeleteFromCart = (item) => {
+    this.props.deleteFromCart(item);
+  }
+
   render() {
     return (
       this.props.cart.map((cart, index) => 
       <Cart
         key={index}
-        cart={cart} />)
+        cart={cart}
+        handleDeleteFromCart={this.handleDeleteFromCart} />)
     )
   }
-
-  /** CartList */
-  // render() {
-  //   return (
-  //     <CartList
-  //       cartList={this.props.cart}
-  //     />
-  //   )
-  // }
 }
 
 const mapStateToProps = (state) => {
@@ -30,7 +27,13 @@ const mapStateToProps = (state) => {
   }
 };
 
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    deleteFromCart: deleteFromCart,
+  }, dispatch)
+};
+
 export default connect(
   mapStateToProps, 
-  null
+  mapDispatchToProps
 )(CartContainer);

@@ -1,4 +1,4 @@
 import { getBooks } from './booksAction';
-import { addToCart } from './cartAction';
+import { addToCart, deleteFromCart } from './cartAction';
 
-export { getBooks, addToCart };
+export { getBooks, addToCart, deleteFromCart };
