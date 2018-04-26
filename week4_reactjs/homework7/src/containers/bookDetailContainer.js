@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Link, Route } from 'react-router-dom';
 
-import { getBooks, getBookDetail, addToCart } from '../actions';
+import { addToCart } from '../actions';
 
 import { BookDetail } from '../components';
 
 class BookDetailContainer extends Component {
   static propTypes = {
-    addToCart: PropTypes.func
+    addToCart: PropTypes.func,
+    bookDetail: PropTypes.array
   };
 
   componentDidMount() {
@@ -35,15 +36,14 @@ class BookDetailContainer extends Component {
   }
 }
 
-const mapStoreToProps = (store, ownProps) => {console.log('mapStateToProps');
+const mapStoreToProps = (store, ownProps) => {
   return {
     bookDetail: store.bookStore.books.find(item => String(item.id) === ownProps.id)
   }
 };
 
-const mapDispatchToProps = (dispatch) => {console.log('mapDispatchToProps');
+const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    getBookDetail,
     addToCart,
   }, dispatch)
 };

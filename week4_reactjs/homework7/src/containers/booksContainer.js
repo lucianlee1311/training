@@ -16,7 +16,6 @@ class BooksContainer extends Component {
 
   componentDidMount() {
     const books = [...data];
-    console.log('books', books);
     this.props.getBooks(books);
   }
 
