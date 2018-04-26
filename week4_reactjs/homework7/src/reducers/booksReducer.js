@@ -1,22 +1,16 @@
-import data from '../data.json';
+const initialState = { 
+  books: []
+};
 
-export const booksReducer = (state = { books: data }, action) => {
+export const booksReducer = (store = initialState, action) => {
   switch (action.type) {
     case "GET_BOOKS":
-    console.log('#booksReducer GET_BOOKS#');
       return {
-        books: [...state.books]
+        books: [...action.books]
       };
       break;
-
-    // case "GET_BOOK_DETAIL":
-    // console.log('#booksReducer GET_BOOK_DETAIL#');
-    //   return {
-        // bookDetail: state.books.filter( item => item.id === action.payload.id )
-      // };
-      // break;
       
     default:
-      return state;
+      return store;
   }
 }

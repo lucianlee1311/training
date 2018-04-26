@@ -6,23 +6,27 @@ import { bindActionCreators } from 'redux';
 import { getBooks, addToCart } from '../actions';
 
 import { Book } from '../components';
+import data from '../data.json';
 
 class BooksContainer extends Component {
+  static propTypes = {
+    getBooks: PropTypes.func,
+    addToCart: PropTypes.func
+  }
 
   componentDidMount() {
-    console.log('BooksContainer componentDidMount');
-    this.props.getBooks();
+    const books = [...data];
+    console.log('books', books);
+    this.props.getBooks(books);
   }
 
   handleAddToCart = (book) => {
-    console.log('this.props.cart', this.props.cart);
     this.props.addToCart(book);
   }
 
   render() {
-    console.log('BooksContainer render');
     return (
-      this.props.books.map((book, index) => (
+      this.props.bookStore.books.map((book, index) => (
         <Book
           key={index}
           book={book}
@@ -32,21 +36,20 @@ class BooksContainer extends Component {
   }
 }
 
-const mapStateToProps = (state) => {console.log('|mapStateToProps|');
+const mapStoreToProps = (store) => {
   return {
-    books: state.bookList.books,
-    cart: state.cartList.cart
+    bookStore: store.bookStore
   }
 };
 
-const mapDispatchToProps = (dispatch) => {console.log('*mapDispatchToProps*');
+const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    getBooks: getBooks,
-    addToCart: addToCart,
+    getBooks,
+    addToCart
   }, dispatch)
 };
 
 export default connect(
-  mapStateToProps,
+  mapStoreToProps,
   mapDispatchToProps
 )(BooksContainer);

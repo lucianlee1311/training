@@ -29,23 +29,8 @@ ReactDOM.render((
       <Switch>
         <Route exact path="/" component={App} />
         <Route path="/book/:id" component={AppBookDetail} />
-        {/* <Route path="/books" component={BooksContainer} /> */}
       </Switch>
     </HashRouter>
   </Provider>
 ), document.getElementById('root'));
 
-// ReactDOM.render((
-//   <Provider store={store}>
-//     <HashRouter>
-//       <Switch>
-//         <Route exact path="/" component={Home} />
-//         <Route path="/books" component={Books} />
-//         <Route path="/book/:id" component={BookDetail} />
-//         <Route path="/shoppingcart" component={ShoppingCart} />
-//       </Switch>
-//     </HashRouter>
-//   </Provider>
-// ), document.getElementById('root'));
-
-// module.hot.accept();
